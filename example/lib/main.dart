@@ -27,21 +27,44 @@ class _MyAppState extends State<MyApp> {
             title: const Text('Volumedeck'),
             centerTitle: true,
           ),
-          body: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  VolumedeckFlutter.start();
-                },
-                child: const Text("Start"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      VolumedeckFlutter.start();
+                    },
+                    child: const Text("Start"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      VolumedeckFlutter.stop();
+                    },
+                    child: const Text("Stop"),
+                  ),
+                ],
               ),
-              ElevatedButton(
-                onPressed: () {
-                  VolumedeckFlutter.stop();
+              const Divider(),
+              StreamBuilder(
+                stream: VolumedeckFlutter.volumeDeckEventStream,
+                initialData: null,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  Map<String, dynamic>? data = snapshot.data;
+                  return data == null
+                      ? const SizedBox()
+                      : Column(
+                          children: data.entries.map((e) {
+                            return ListTile(
+                              title: Text(e.key),
+                              trailing: Text(e.value?.toString() ?? ""),
+                            );
+                          }).toList(),
+                        );
                 },
-                child: const Text("Stop"),
-              )
+              ),
             ],
           )),
     );

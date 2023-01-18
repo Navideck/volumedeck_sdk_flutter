@@ -1,12 +1,12 @@
 package com.navideck.volumedeck_flutter
 
 import android.app.Activity
-import android.util.Log
 import androidx.annotation.NonNull
 import com.navideck.volumedeck.VolumeDeck
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -16,26 +16,39 @@ import io.flutter.plugin.common.PluginRegistry
 
 /** VolumedeckFlutterPlugin */
 class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
-    PluginRegistry.RequestPermissionsResultListener {
+    PluginRegistry.RequestPermissionsResultListener, EventChannel.StreamHandler {
 
+    private var volumedeckEventSink: EventChannel.EventSink? = null
+    private lateinit var volumedeckEventResult: EventChannel
     private lateinit var channel: MethodChannel
     private var activity: Activity? = null
     private var volumeDeck: VolumeDeck? = null
+
+    private fun sendEvent(data: Map<String, String>) {
+        volumedeckEventSink?.success(data)
+    }
 
     private fun initializeVolumedeck() {
         volumeDeck = VolumeDeck(
             runInBackground = true,
             onLocationStatusChange = { isOn: Boolean ->
-                Log.e("VolumedeckFlutterPlugin", "OnLocationChange :$isOn")
+                val data = mapOf("onLocationStatusChange" to isOn.toString())
+                sendEvent(data)
             },
             onLocationUpdate = { speed: Float, volume: Float ->
-                Log.e("VolumedeckFlutterPlugin", "onLocationUpdate :$speed / $volume")
+                val data = mapOf(
+                    "speed" to speed.toString(),
+                    "volume" to volume.toString()
+                )
+                sendEvent(data)
             },
             onStart = {
-                Log.e("VolumedeckFlutterPlugin", "start")
+                val data = mapOf("onStart" to "")
+                sendEvent(data)
             },
             onStop = {
-                Log.e("VolumedeckFlutterPlugin", "stop")
+                val data = mapOf("onStop" to "")
+                sendEvent(data)
             }
         )
     }
@@ -47,13 +60,16 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     }
 
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "@com.navideck.volumedeck_flutter")
         channel.setMethodCallHandler(this)
+        volumedeckEventResult =
+            EventChannel(flutterPluginBinding.binaryMessenger, "@com.navideck.volumedeck_event")
+        volumedeckEventResult.setStreamHandler(this)
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
             "start" -> {
                 activity?.let { volumeDeck?.start(it) }
@@ -65,6 +81,24 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
             }
             else -> {
                 result.notImplemented()
+            }
+        }
+    }
+
+    override fun onListen(args: Any?, eventSink: EventChannel.EventSink?) {
+        val map = args as? Map<*, *> ?: return
+        when (map["name"]) {
+            "volumeDeckEvent" -> {
+                volumedeckEventSink = eventSink
+            }
+        }
+    }
+
+    override fun onCancel(args: Any?) {
+        val map = args as? Map<*, *> ?: return
+        when (map["name"]) {
+            "volumeDeckEvent" -> {
+                volumedeckEventSink = null
             }
         }
     }
@@ -82,6 +116,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
+        volumedeckEventResult.setStreamHandler(null)
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
