@@ -1,0 +1,3 @@
+rootProject.name = 'volumedeck_flutter'
+include ':volumedeck'
+project(":volumedeck").projectDir = file("../../volumedeck_sdk_android/volumedeck")
