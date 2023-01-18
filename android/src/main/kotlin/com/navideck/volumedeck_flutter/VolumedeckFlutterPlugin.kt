@@ -11,12 +11,15 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.plugin.common.PluginRegistry
 
 
 /** VolumedeckFlutterPlugin */
-class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
+class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
+    PluginRegistry.RequestPermissionsResultListener {
+
     private lateinit var channel: MethodChannel
-    private lateinit var activity: Activity
+    private var activity: Activity? = null
     private var volumeDeck: VolumeDeck? = null
 
     private fun initializeVolumedeck() {
@@ -40,6 +43,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         initializeVolumedeck()
         activity = binding.activity
+        binding.addRequestPermissionsResultListener(this)
     }
 
 
@@ -52,10 +56,12 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             "start" -> {
-                volumeDeck?.start(activity)
+                activity?.let { volumeDeck?.start(it) }
+                result.success(null)
             }
             "stop" -> {
-                volumeDeck?.stop(activity)
+                activity?.let { volumeDeck?.stop(it) }
+                result.success(null)
             }
             else -> {
                 result.notImplemented()
@@ -63,13 +69,31 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ): Boolean {
+        activity?.let {
+            volumeDeck?.onRequestPermissionsResult(requestCode, grantResults, it)
+        }
+        return false
+    }
+
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
 
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        activity = binding.activity
+        binding.addRequestPermissionsResultListener(this)
+    }
 
-    // TODO : implement these
-    override fun onDetachedFromActivityForConfigChanges() {}
-    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {}
-    override fun onDetachedFromActivity() {}
+    override fun onDetachedFromActivityForConfigChanges() {
+        activity = null
+    }
+
+    override fun onDetachedFromActivity() {
+        activity = null
+    }
 }
