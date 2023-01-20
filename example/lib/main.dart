@@ -15,7 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late Volumedeck volumedeckFlutter;
+  late Volumedeck volumedeck;
 
   bool isLocationOn = false;
   bool isStarted = false;
@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
   double volume = 0.0;
 
   void initializeVolumedeck() {
-    volumedeckFlutter = Volumedeck(
+    volumedeck = Volumedeck(
       runInBackground: false,
       onLocationStatusChange: (bool status) {
         setState(() => isLocationOn = status);
@@ -76,13 +76,13 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      volumedeckFlutter.start();
+                      volumedeck.start();
                     },
                     child: const Text("Start"),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      volumedeckFlutter.stop();
+                      volumedeck.stop();
                     },
                     child: const Text("Stop"),
                   ),
