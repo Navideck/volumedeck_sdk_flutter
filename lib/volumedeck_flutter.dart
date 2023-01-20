@@ -1,13 +1,13 @@
 import 'package:flutter/services.dart';
 
-class VolumedeckFlutter {
+class Volumedeck {
   bool runInBackground;
   VoidCallback? onStart;
   VoidCallback? onStop;
   Function(bool status)? onLocationStatusChange;
   Function(double speed, double volume)? onLocationUpdate;
 
-  VolumedeckFlutter({
+  Volumedeck({
     this.runInBackground = false,
     this.onLocationStatusChange,
     this.onStart,

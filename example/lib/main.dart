@@ -15,7 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late VolumedeckFlutter volumedeckFlutter;
+  late Volumedeck volumedeckFlutter;
 
   bool isLocationOn = false;
   bool isStarted = false;
@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
   double volume = 0.0;
 
   void initializeVolumedeck() {
-    volumedeckFlutter = VolumedeckFlutter(
+    volumedeckFlutter = Volumedeck(
       runInBackground: false,
       onLocationStatusChange: (bool status) {
         setState(() => isLocationOn = status);
