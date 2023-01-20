@@ -1,17 +1,19 @@
 package com.navideck.volumedeck_flutter
 
 import android.app.Activity
+import android.os.Handler
+import android.os.Looper
+import android.provider.ContactsContract.RawContacts.Data
 import androidx.annotation.NonNull
 import com.navideck.volumedeck.VolumeDeck
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.*
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 
 /** VolumedeckFlutterPlugin */
@@ -21,45 +23,68 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     private lateinit var channel: MethodChannel
     private var activity: Activity? = null
     private var volumeDeck: VolumeDeck? = null
+    private lateinit var mainThreadHandler: Handler
+    private lateinit var messageConnector: BasicMessageChannel<Any>
 
-    private fun initializeVolumedeck() {
+    private fun sendMessage(type: String, data: Any? = null) {
+        mainThreadHandler.post {
+            messageConnector.send(
+                mapOf(
+                    "type" to type,
+                    "data" to data,
+                )
+            )
+        }
+    }
+
+    private fun initializeVolumedeck(runInBackground: Boolean) {
         volumeDeck = VolumeDeck(
-            runInBackground = true,
+            runInBackground = runInBackground,
             onLocationStatusChange = { isOn: Boolean ->
-                channel.invokeMethod("onLocationStatusChange", isOn)
+                sendMessage("onLocationStatusChange", isOn)
             },
             onLocationUpdate = { speed: Float, volume: Float ->
-                channel.invokeMethod(
+                val df = DecimalFormat("#.##")
+                df.roundingMode = RoundingMode.CEILING
+                sendMessage(
                     "onLocationUpdate", mapOf(
-                        "speed" to speed,
-                        "volume" to volume
+                        "speed" to df.format(speed).toDouble(),
+                        "volume" to df.format(volume).toDouble(),
                     )
                 )
             },
             onStart = {
-                channel.invokeMethod("onStart", null)
+                sendMessage("onStart")
             },
             onStop = {
-                channel.invokeMethod("onStop", null)
+                sendMessage("onStop")
             }
         )
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        initializeVolumedeck()
         activity = binding.activity
         binding.addRequestPermissionsResultListener(this)
     }
-
-
+    
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "@com.navideck.volumedeck_flutter")
         channel.setMethodCallHandler(this)
+        mainThreadHandler = Handler(Looper.getMainLooper())
+        messageConnector = BasicMessageChannel(
+            flutterPluginBinding.binaryMessenger,
+            "@com.navideck.volumedeck_flutter/message_connector",
+            StandardMessageCodec.INSTANCE
+        )
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
+            "initialize" -> {
+                val runInBackground: Boolean = call.arguments as Boolean? ?: false
+                initializeVolumedeck(runInBackground)
+            }
             "start" -> {
                 activity?.let { volumeDeck?.start(it) }
                 result.success(null)

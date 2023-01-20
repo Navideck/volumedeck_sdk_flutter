@@ -1,20 +1,23 @@
 import 'package:flutter/services.dart';
 
 class VolumedeckFlutter {
+  bool runInBackground;
   VoidCallback? onStart;
   VoidCallback? onStop;
   Function(bool status)? onLocationStatusChange;
   Function(double speed, double volume)? onLocationUpdate;
 
   VolumedeckFlutter({
+    this.runInBackground = false,
     this.onLocationStatusChange,
     this.onStart,
     this.onStop,
     this.onLocationUpdate,
   }) {
-    _methodChannel.setMethodCallHandler((MethodCall call) async {
-      print(call.method);
-      switch (call.method) {
+    _messageConnector.setMessageHandler((dynamic message) async {
+      var type = message["type"];
+      var data = message["data"];
+      switch (type) {
         case "onStart":
           onStart?.call();
           break;
@@ -22,21 +25,26 @@ class VolumedeckFlutter {
           onStop?.call();
           break;
         case "onLocationStatusChange":
-          onLocationStatusChange?.call(call.arguments);
+          onLocationStatusChange?.call(data);
           break;
         case "onLocationUpdate":
-          var data = call.arguments;
-          print(data["speed"]);
           onLocationUpdate?.call(data["speed"], data["volume"]);
           break;
       }
+      return null;
     });
+    _methodChannel.invokeMethod("initialize", runInBackground);
   }
 
-  final MethodChannel _methodChannel =
-      const MethodChannel('@com.navideck.volumedeck_flutter');
+  final _methodChannel = const MethodChannel(
+    '@com.navideck.volumedeck_flutter',
+  );
+  final _messageConnector = const BasicMessageChannel(
+    "@com.navideck.volumedeck_flutter/message_connector",
+    StandardMessageCodec(),
+  );
 
-  Future start() => _methodChannel.invokeMethod<String>('start');
+  Future start() => _methodChannel.invokeMethod('start');
 
-  Future stop() => _methodChannel.invokeMethod<String>('stop');
+  Future stop() => _methodChannel.invokeMethod('stop');
 }

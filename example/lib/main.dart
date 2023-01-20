@@ -22,9 +22,9 @@ class _MyAppState extends State<MyApp> {
   double speed = 0.0;
   double volume = 0.0;
 
-  @override
-  void initState() {
+  void initializeVolumedeck() {
     volumedeckFlutter = VolumedeckFlutter(
+      runInBackground: false,
       onLocationStatusChange: (bool status) {
         setState(() => isLocationOn = status);
       },
@@ -41,6 +41,11 @@ class _MyAppState extends State<MyApp> {
         });
       },
     );
+  }
+
+  @override
+  void initState() {
+    initializeVolumedeck();
     super.initState();
   }
 
@@ -52,6 +57,16 @@ class _MyAppState extends State<MyApp> {
           appBar: AppBar(
             title: const Text('Volumedeck'),
             centerTitle: true,
+            leading: Icon(
+              isLocationOn ? Icons.location_on : Icons.location_off,
+            ),
+            actions: [
+              Icon(
+                Icons.circle,
+                color: isStarted ? Colors.green : Colors.red,
+              ),
+              const SizedBox(width: 10)
+            ],
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,14 +89,6 @@ class _MyAppState extends State<MyApp> {
                 ],
               ),
               const Divider(),
-              ListTile(
-                title: const Text("Started"),
-                trailing: Text(isStarted.toString()),
-              ),
-              ListTile(
-                title: const Text("Location On"),
-                trailing: Text(isLocationOn.toString()),
-              ),
               ListTile(
                 title: const Text("Speed"),
                 trailing: Text(speed.toString()),
