@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:volumedeck_flutter/volumedeck_flutter.dart';
 
@@ -13,8 +15,37 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late Volumedeck volumedeck;
+
+  bool isLocationOn = false;
+  bool isStarted = false;
+  double speed = 0.0;
+  double volume = 0.0;
+
+  void initializeVolumedeck() {
+    volumedeck = Volumedeck(
+      runInBackground: false,
+      onLocationStatusChange: (bool status) {
+        setState(() => isLocationOn = status);
+      },
+      onStart: () {
+        setState(() => isStarted = true);
+      },
+      onStop: () {
+        setState(() => isStarted = false);
+      },
+      onLocationUpdate: (s, v) {
+        setState(() {
+          speed = s;
+          volume = v;
+        });
+      },
+    );
+  }
+
   @override
   void initState() {
+    initializeVolumedeck();
     super.initState();
   }
 
@@ -26,21 +57,45 @@ class _MyAppState extends State<MyApp> {
           appBar: AppBar(
             title: const Text('Volumedeck'),
             centerTitle: true,
-          ),
-          body: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  VolumedeckFlutter.start();
-                },
-                child: const Text("Start"),
+            leading: Icon(
+              isLocationOn ? Icons.location_on : Icons.location_off,
+            ),
+            actions: [
+              Icon(
+                Icons.circle,
+                color: isStarted ? Colors.green : Colors.red,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  VolumedeckFlutter.stop();
-                },
-                child: const Text("Stop"),
+              const SizedBox(width: 10)
+            ],
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      volumedeck.start();
+                    },
+                    child: const Text("Start"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      volumedeck.stop();
+                    },
+                    child: const Text("Stop"),
+                  ),
+                ],
+              ),
+              const Divider(),
+              ListTile(
+                title: const Text("Speed"),
+                trailing: Text(speed.toString()),
+              ),
+              ListTile(
+                title: const Text("Volume"),
+                trailing: Text(volume.toString()),
               )
             ],
           )),
