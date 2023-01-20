@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:volumedeck_flutter/volumedeck_flutter.dart';
 
@@ -13,8 +15,32 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late VolumedeckFlutter volumedeckFlutter;
+
+  bool isLocationOn = false;
+  bool isStarted = false;
+  double speed = 0.0;
+  double volume = 0.0;
+
   @override
   void initState() {
+    volumedeckFlutter = VolumedeckFlutter(
+      onLocationStatusChange: (bool status) {
+        setState(() => isLocationOn = status);
+      },
+      onStart: () {
+        setState(() => isStarted = true);
+      },
+      onStop: () {
+        setState(() => isStarted = false);
+      },
+      onLocationUpdate: (s, v) {
+        setState(() {
+          speed = s;
+          volume = v;
+        });
+      },
+    );
     super.initState();
   }
 
@@ -35,36 +61,35 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      VolumedeckFlutter.start();
+                      volumedeckFlutter.start();
                     },
                     child: const Text("Start"),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      VolumedeckFlutter.stop();
+                      volumedeckFlutter.stop();
                     },
                     child: const Text("Stop"),
                   ),
                 ],
               ),
               const Divider(),
-              StreamBuilder(
-                stream: VolumedeckFlutter.volumeDeckEventStream,
-                initialData: null,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  Map<String, dynamic>? data = snapshot.data;
-                  return data == null
-                      ? const SizedBox()
-                      : Column(
-                          children: data.entries.map((e) {
-                            return ListTile(
-                              title: Text(e.key),
-                              trailing: Text(e.value?.toString() ?? ""),
-                            );
-                          }).toList(),
-                        );
-                },
+              ListTile(
+                title: const Text("Started"),
+                trailing: Text(isStarted.toString()),
               ),
+              ListTile(
+                title: const Text("Location On"),
+                trailing: Text(isLocationOn.toString()),
+              ),
+              ListTile(
+                title: const Text("Speed"),
+                trailing: Text(speed.toString()),
+              ),
+              ListTile(
+                title: const Text("Volume"),
+                trailing: Text(volume.toString()),
+              )
             ],
           )),
     );
