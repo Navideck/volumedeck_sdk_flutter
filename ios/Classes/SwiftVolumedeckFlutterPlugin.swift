@@ -39,14 +39,14 @@ public class SwiftVolumedeckFlutterPlugin: NSObject, FlutterPlugin { //, Flutter
             onLocationUpdate: { speed, volume in
                 self.sendMessage(
                     type: "onLocationUpdate",
-                    data:[
-                        "speed" : speed,
-                        "volume" : volume,
+                    data: [
+                        "speed": speed,
+                        "volume": volume,
                     ]
                 )
             },
             onLocationStatusChange: { status in
-                self.sendMessage(type:"onLocationStatusChange", data:status)
+                self.sendMessage(type: "onLocationStatusChange", data: status)
             },
             onStart: {
                 self.sendMessage(type: "onStart")
