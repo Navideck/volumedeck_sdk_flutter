@@ -4,49 +4,60 @@ import Volumedeck
 
 public class SwiftVolumedeckFlutterPlugin: NSObject, FlutterPlugin { //, FlutterStreamHandler {
     var volumedeck: Volumedeck?
-    // private var volumedeckEventsSink: FlutterEventSink?
-    
-    private func initVolumedeck(){
-        // volumedeck = Volumedeck(runInBackground: true)
-    }
-    
-    private func disposeVolumedeck(){
-        volumedeck = nil
-    }
-    
-    // public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-    //     guard let args = arguments as? Dictionary<String, Any>, let name = args["name"] as? String else {
-    //           return nil
-    //     }
-    //     if name == "volumedeckEvent" {
-    //         volumedeckEventsSink = events
-    //         initVolumedeck()
-    //     }
-    //     return nil
-    // }
-    
-    // public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-    //     guard let args = arguments as? Dictionary<String, Any>, let name = args["name"] as? String else {
-    //           return nil
-    //     }
-    //     if name == "volumedeckEvent" {
-    //         volumedeckEventsSink = nil
-    //         disposeVolumedeck()
-    //     }
-    //     return nil
-    // }
-    
+    private var messageConnector: FlutterBasicMessageChannel?
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-        
-        let channel = FlutterMethodChannel(name: "volumedeck", binaryMessenger: registrar.messenger())
+        let channel = FlutterMethodChannel(name: "@com.navideck.volumedeck_flutter", binaryMessenger: registrar.messenger())
         let instance = SwiftVolumedeckFlutterPlugin()
+        instance.messageConnector = FlutterBasicMessageChannel(name: "@com.navideck.volumedeck_flutter/message_connector", binaryMessenger: registrar.messenger())
         registrar.addMethodCallDelegate(instance, channel: channel)
-                
-        let eventChannel = FlutterEventChannel(name: "com.navideck.volumedeck", binaryMessenger: registrar.messenger())
-//        eventChannel.setStreamHandler(instance)
-        
-        instance.volumedeck = Volumedeck(runInBackground: true)
-        instance.volumedeck?.isOn = true
+    }
+    
+    
+    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        switch call.method {
+        case "initialize":
+            let runInBackground: Bool = (call.arguments as? Bool) ?? false
+            initializeVolumedeck(runInBackground: runInBackground)
+            result(nil)
+        case "start":
+            volumedeck?.isOn = true
+            result(nil)
+        case "stop":
+            volumedeck?.isOn = false
+            sendMessage(type: "onStop")
+            result(nil)
+        default:
+            result(FlutterMethodNotImplemented)
+        }
+    }
+    
+    
+    public func initializeVolumedeck(runInBackground: Bool){
+        volumedeck = Volumedeck(
+            runInBackground: runInBackground,
+            onLocationUpdate: { speed, volume in
+                self.sendMessage(
+                    type: "onLocationUpdate",
+                    data: [
+                        "speed": speed,
+                        "volume": volume,
+                    ]
+                )
+            },
+            onLocationStatusChange: { status in
+                self.sendMessage(type: "onLocationStatusChange", data: status)
+            },
+            onStart: {
+                self.sendMessage(type: "onStart")
+            }
+        )
+    }
+    
+    public func sendMessage(type: String, data: Any? = nil) {
+        messageConnector?.sendMessage([
+            "type": type,
+            "data": data,
+        ])
     }
 }
