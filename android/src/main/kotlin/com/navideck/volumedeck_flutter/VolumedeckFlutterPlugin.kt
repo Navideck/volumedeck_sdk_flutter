@@ -83,9 +83,9 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
             "initialize" -> {
-                val data = call.arguments as Map<*, *>
-                val runInBackground: Boolean = data["runInBackground"] as Boolean? ?: false
-                val activationKey: String? = data["activationKey"] as String?
+                val args = call.arguments as Map<*, *>
+                val runInBackground: Boolean = args["runInBackground"] as Boolean? ?: false
+                val activationKey: String? = args["activationKey"] as String?
                 initializeVolumedeck(runInBackground, activationKey)
             }
             "start" -> {
