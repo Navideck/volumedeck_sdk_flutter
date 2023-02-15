@@ -37,9 +37,10 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         }
     }
 
-    private fun initializeVolumedeck(runInBackground: Boolean) {
+    private fun initializeVolumedeck(runInBackground: Boolean, activationKey: String?) {
         volumeDeck = VolumeDeck(
             runInBackground = runInBackground,
+            activationKey = activationKey,
             onLocationStatusChange = { isOn: Boolean ->
                 sendMessage("onLocationStatusChange", isOn)
             },
@@ -82,8 +83,10 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
             "initialize" -> {
-                val runInBackground: Boolean = call.arguments as Boolean? ?: false
-                initializeVolumedeck(runInBackground)
+                val data = call.arguments as Map<*, *>
+                val runInBackground: Boolean = data["runInBackground"] as Boolean? ?: false
+                val activationKey: String? = data["activationKey"] as String?
+                initializeVolumedeck(runInBackground, activationKey)
             }
             "start" -> {
                 activity?.let { volumeDeck?.start(it) }

@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 
 class Volumedeck {
   bool runInBackground;
+  String? activationKey;
   VoidCallback? onStart;
   VoidCallback? onStop;
   Function(bool status)? onLocationStatusChange;
@@ -9,6 +10,7 @@ class Volumedeck {
 
   Volumedeck({
     this.runInBackground = false,
+    this.activationKey,
     this.onLocationStatusChange,
     this.onStart,
     this.onStop,
@@ -33,7 +35,10 @@ class Volumedeck {
       }
       return null;
     });
-    _methodChannel.invokeMethod("initialize", runInBackground);
+    _methodChannel.invokeMethod("initialize", {
+      "runInBackground": runInBackground,
+      "activationKey": activationKey,
+    });
   }
 
   final _methodChannel = const MethodChannel(
