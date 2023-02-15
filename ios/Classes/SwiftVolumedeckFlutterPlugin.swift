@@ -35,7 +35,7 @@ public class SwiftVolumedeckFlutterPlugin: NSObject, FlutterPlugin {
     }
     
     
-    public func initializeVolumedeck(runInBackground: Bool,activationKey: String?){
+    public func initializeVolumedeck(runInBackground: Bool, activationKey: String?) {
         volumedeck = Volumedeck(
             runInBackground: runInBackground,
             onLocationUpdate: { speed, volume in
