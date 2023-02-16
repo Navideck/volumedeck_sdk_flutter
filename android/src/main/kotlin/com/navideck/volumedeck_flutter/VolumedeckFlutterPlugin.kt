@@ -3,9 +3,8 @@ package com.navideck.volumedeck_flutter
 import android.app.Activity
 import android.os.Handler
 import android.os.Looper
-import android.provider.ContactsContract.RawContacts.Data
 import androidx.annotation.NonNull
-import com.navideck.volumedeck.VolumeDeck
+import com.navideck.volumedeck_android.VolumeDeck
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
