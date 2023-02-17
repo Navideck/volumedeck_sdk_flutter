@@ -32,7 +32,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <service
-            android:name="com.navideck.volumedeck_android.services.VolumeDeckLocationService"
+            android:name="com.navideck.volumedeck_android.services.VolumedeckLocationService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="location" />
