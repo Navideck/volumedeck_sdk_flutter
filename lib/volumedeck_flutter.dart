@@ -2,6 +2,9 @@ import 'package:flutter/services.dart';
 
 class Volumedeck {
   bool runInBackground;
+  bool showStopButtonInAndroidNotification;
+  bool showSpeedAndVolumeChangesInAndroidNotification;
+  bool useAndroidWakeLock;
   String? activationKey;
   VoidCallback? onStart;
   VoidCallback? onStop;
@@ -10,6 +13,9 @@ class Volumedeck {
 
   Volumedeck({
     this.runInBackground = false,
+    this.showStopButtonInAndroidNotification = false,
+    this.showSpeedAndVolumeChangesInAndroidNotification = false,
+    this.useAndroidWakeLock = false,
     this.activationKey,
     this.onLocationStatusChange,
     this.onStart,
@@ -38,6 +44,10 @@ class Volumedeck {
     _methodChannel.invokeMethod("initialize", {
       "runInBackground": runInBackground,
       "activationKey": activationKey,
+      "showStopButtonInNotification": showStopButtonInAndroidNotification,
+      "showSpeedAndVolumeChangesInNotification":
+          showSpeedAndVolumeChangesInAndroidNotification,
+      "useWakeLock": useAndroidWakeLock,
     });
   }
 

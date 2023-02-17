@@ -36,37 +36,49 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         }
     }
 
-    private fun initializeVolumedeck(runInBackground: Boolean, activationKey: String?) {
-        volumedeck = Volumedeck(
-            runInBackground = runInBackground,
-            activationKey = activationKey,
-            onLocationStatusChange = { isOn: Boolean ->
-                sendMessage("onLocationStatusChange", isOn)
-            },
-            onLocationUpdate = { speed: Float, volume: Float ->
-                val df = DecimalFormat("#.##")
-                df.roundingMode = RoundingMode.CEILING
-                sendMessage(
-                    "onLocationUpdate", mapOf(
-                        "speed" to df.format(speed).toDouble(),
-                        "volume" to df.format(volume).toDouble(),
+    private fun initializeVolumedeck(
+        runInBackground: Boolean,
+        showStopButtonInNotification: Boolean,
+        showSpeedAndVolumeChangesInNotification: Boolean,
+        useWakeLock: Boolean,
+        activationKey: String?
+    ) {
+        activity?.let {
+            volumedeck = Volumedeck(
+                activity = it,
+                runInBackground = runInBackground,
+                showStopButtonInNotification = showStopButtonInNotification,
+                showSpeedAndVolumeChangesInNotification = showSpeedAndVolumeChangesInNotification,
+                useWakeLock = useWakeLock,
+                activationKey = activationKey,
+                onLocationStatusChange = { isOn: Boolean ->
+                    sendMessage("onLocationStatusChange", isOn)
+                },
+                onLocationUpdate = { speed: Float, volume: Float ->
+                    val df = DecimalFormat("#.##")
+                    df.roundingMode = RoundingMode.CEILING
+                    sendMessage(
+                        "onLocationUpdate", mapOf(
+                            "speed" to df.format(speed).toDouble(),
+                            "volume" to df.format(volume).toDouble(),
+                        )
                     )
-                )
-            },
-            onStart = {
-                sendMessage("onStart")
-            },
-            onStop = {
-                sendMessage("onStop")
-            }
-        )
+                },
+                onStart = {
+                    sendMessage("onStart")
+                },
+                onStop = {
+                    sendMessage("onStop")
+                }
+            )
+        }
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
         binding.addRequestPermissionsResultListener(this)
     }
-    
+
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "@com.navideck.volumedeck_flutter")
@@ -84,8 +96,21 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
             "initialize" -> {
                 val args = call.arguments as Map<*, *>
                 val runInBackground: Boolean = args["runInBackground"] as Boolean? ?: false
+                val showStopButtonInNotification: Boolean =
+                    args["showStopButtonInNotification"] as Boolean? ?: false
+                val showSpeedAndVolumeChangesInNotification: Boolean =
+                    args["showSpeedAndVolumeChangesInNotification"] as Boolean? ?: false
+                val useWakeLock: Boolean = args["useWakeLock"] as Boolean? ?: false
                 val activationKey: String? = args["activationKey"] as String?
-                initializeVolumedeck(runInBackground, activationKey)
+
+                initializeVolumedeck(
+                    runInBackground,
+                    showStopButtonInNotification,
+                    showSpeedAndVolumeChangesInNotification,
+                    useWakeLock,
+                    activationKey
+                )
+                result.success(null)
             }
             "start" -> {
                 activity?.let { volumedeck?.start(it) }
@@ -113,7 +138,8 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         return false
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        activity?.let { volumedeck?.stop(it) }
         channel.setMethodCallHandler(null)
     }
 
@@ -127,6 +153,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     }
 
     override fun onDetachedFromActivity() {
+        activity?.let { volumedeck?.stop(it) }
         activity = null
     }
 }
