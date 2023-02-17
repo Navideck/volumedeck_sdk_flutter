@@ -32,9 +32,16 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <service
-            android:name="com.navideck.volumedeck.services.VolumeDeckLocationService"
+            android:name="com.navideck.volumedeck_android.services.VolumedeckLocationService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="location" />
+        <receiver
+            android:name="com.navideck.volumedeck_android.receiver.NotificationActionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="Stop" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

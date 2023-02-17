@@ -24,7 +24,9 @@ class _MyAppState extends State<MyApp> {
 
   void initializeVolumedeck() {
     volumedeck = Volumedeck(
-      runInBackground: false,
+      runInBackground: true,
+      showStopButtonInAndroidNotification: true,
+      showSpeedAndVolumeChangesInAndroidNotification: true,
       onLocationStatusChange: (bool status) {
         setState(() => isLocationOn = status);
       },

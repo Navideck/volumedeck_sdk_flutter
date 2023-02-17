@@ -2,7 +2,7 @@ import Flutter
 import UIKit
 import Volumedeck
 
-public class SwiftVolumedeckFlutterPlugin: NSObject, FlutterPlugin { //, FlutterStreamHandler {
+public class SwiftVolumedeckFlutterPlugin: NSObject, FlutterPlugin {
     var volumedeck: Volumedeck?
     private var messageConnector: FlutterBasicMessageChannel?
     
@@ -17,8 +17,10 @@ public class SwiftVolumedeckFlutterPlugin: NSObject, FlutterPlugin { //, Flutter
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "initialize":
-            let runInBackground: Bool = (call.arguments as? Bool) ?? false
-            initializeVolumedeck(runInBackground: runInBackground)
+            let args = call.arguments as? Dictionary<String, Any>
+            let runInBackground: Bool = args?["runInBackground"] as? Bool ?? false
+            let activationKey: String? = args?["activationKey"] as? String
+            initializeVolumedeck(runInBackground: runInBackground,activationKey: activationKey)
             result(nil)
         case "start":
             volumedeck?.isOn = true
@@ -33,7 +35,7 @@ public class SwiftVolumedeckFlutterPlugin: NSObject, FlutterPlugin { //, Flutter
     }
     
     
-    public func initializeVolumedeck(runInBackground: Bool){
+    public func initializeVolumedeck(runInBackground: Bool, activationKey: String?) {
         volumedeck = Volumedeck(
             runInBackground: runInBackground,
             onLocationUpdate: { speed, volume in
@@ -50,7 +52,8 @@ public class SwiftVolumedeckFlutterPlugin: NSObject, FlutterPlugin { //, Flutter
             },
             onStart: {
                 self.sendMessage(type: "onStart")
-            }
+            },
+            activationKey: activationKey
         )
     }
     
