@@ -4,7 +4,7 @@ import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.NonNull
-import com.navideck.volumedeck_android.VolumeDeck
+import com.navideck.volumedeck_android.Volumedeck
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -21,7 +21,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
 
     private lateinit var channel: MethodChannel
     private var activity: Activity? = null
-    private var volumeDeck: VolumeDeck? = null
+    private var volumedeck: Volumedeck? = null
     private lateinit var mainThreadHandler: Handler
     private lateinit var messageConnector: BasicMessageChannel<Any>
 
@@ -37,7 +37,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     }
 
     private fun initializeVolumedeck(runInBackground: Boolean, activationKey: String?) {
-        volumeDeck = VolumeDeck(
+        volumedeck = Volumedeck(
             runInBackground = runInBackground,
             activationKey = activationKey,
             onLocationStatusChange = { isOn: Boolean ->
@@ -88,11 +88,11 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                 initializeVolumedeck(runInBackground, activationKey)
             }
             "start" -> {
-                activity?.let { volumeDeck?.start(it) }
+                activity?.let { volumedeck?.start(it) }
                 result.success(null)
             }
             "stop" -> {
-                activity?.let { volumeDeck?.stop(it) }
+                activity?.let { volumedeck?.stop(it) }
                 result.success(null)
             }
             else -> {
@@ -108,7 +108,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         grantResults: IntArray
     ): Boolean {
         activity?.let {
-            volumeDeck?.onRequestPermissionsResult(requestCode, grantResults, it)
+            volumedeck?.onRequestPermissionsResult(requestCode, grantResults, it)
         }
         return false
     }
