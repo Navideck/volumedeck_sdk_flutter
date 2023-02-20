@@ -42,8 +42,6 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         showSpeedAndVolumeChangesInNotification: Boolean,
         useWakeLock: Boolean,
         activationKey: String?,
-        autoHandlePermissions: Boolean,
-        requiresAndroidBackgroundPermission: Boolean,
     ) {
         activity?.let {
             volumedeck = Volumedeck(
@@ -53,8 +51,6 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                 showSpeedAndVolumeChangesInNotification = showSpeedAndVolumeChangesInNotification,
                 useWakeLock = useWakeLock,
                 activationKey = activationKey,
-                autoHandlePermissions = autoHandlePermissions,
-                requiresAndroidBackgroundPermission = requiresAndroidBackgroundPermission,
                 onLocationStatusChange = { isOn: Boolean ->
                     sendMessage("onLocationStatusChange", isOn)
                 },
@@ -106,19 +102,13 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                     args["showSpeedAndVolumeChangesInNotification"] as Boolean? ?: false
                 val useWakeLock: Boolean = args["useWakeLock"] as Boolean? ?: false
                 val activationKey: String? = args["activationKey"] as String?
-                val autoHandlePermissions: Boolean =
-                    args["autoHandleAndroidPermissions"] as Boolean? ?: true
-                val requiresAndroidBackgroundPermission: Boolean =
-                    args["requiresAndroidBackgroundPermission"] as Boolean? ?: false
 
                 initializeVolumedeck(
                     runInBackground,
                     showStopButtonInNotification,
                     showSpeedAndVolumeChangesInNotification,
                     useWakeLock,
-                    activationKey,
-                    autoHandlePermissions,
-                    requiresAndroidBackgroundPermission
+                    activationKey
                 )
 
                 result.success(null)

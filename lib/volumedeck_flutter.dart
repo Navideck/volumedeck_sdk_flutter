@@ -14,8 +14,6 @@ class Volumedeck {
     bool showStopButtonInAndroidNotification = false,
     bool showSpeedAndVolumeChangesInAndroidNotification = false,
     bool useAndroidWakeLock = false,
-    bool autoHandleAndroidPermissions = true,
-    bool requiresAndroidBackgroundPermission = false,
     String? activationKey,
   }) async {
     if (_isInitialize) throw "Volumedeck already initialized";
@@ -26,9 +24,6 @@ class Volumedeck {
       "showSpeedAndVolumeChangesInNotification":
           showSpeedAndVolumeChangesInAndroidNotification,
       "useWakeLock": useAndroidWakeLock,
-      "autoHandleAndroidPermissions": autoHandleAndroidPermissions,
-      "requiresAndroidBackgroundPermission":
-          requiresAndroidBackgroundPermission,
     });
     _isInitialize = true;
   }

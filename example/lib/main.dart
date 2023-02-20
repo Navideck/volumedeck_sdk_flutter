@@ -27,8 +27,6 @@ class _MyAppState extends State<MyApp> {
       runInBackground: true,
       showStopButtonInAndroidNotification: true,
       showSpeedAndVolumeChangesInAndroidNotification: true,
-      autoHandleAndroidPermissions: true,
-      requiresAndroidBackgroundPermission: false,
     );
 
     Volumedeck.setUpdateListener(
