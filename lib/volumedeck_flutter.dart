@@ -1,11 +1,14 @@
 import 'package:flutter/services.dart';
 
 class Volumedeck {
-  static const _methodChannel =
-      MethodChannel('@com.navideck.volumedeck_flutter');
+  static const _methodChannel = MethodChannel(
+    '@com.navideck.volumedeck_flutter',
+  );
   static const _messageConnector = BasicMessageChannel(
-      "@com.navideck.volumedeck_flutter/message_connector",
-      StandardMessageCodec());
+    "@com.navideck.volumedeck_flutter/message_connector",
+    StandardMessageCodec(),
+  );
+
   static bool _isInitialize = false;
 
   /// call [initialize] once with required parameters
@@ -15,8 +18,13 @@ class Volumedeck {
     bool showSpeedAndVolumeChangesInAndroidNotification = false,
     bool useAndroidWakeLock = false,
     String? activationKey,
+    VoidCallback? onStart,
+    VoidCallback? onStop,
+    Function(bool status)? onLocationStatusChange,
+    Function(double speed, double volume)? onLocationUpdate,
   }) async {
     if (_isInitialize) throw "Volumedeck already initialized";
+
     await _methodChannel.invokeMethod("initialize", {
       "runInBackground": runInBackground,
       "activationKey": activationKey,
@@ -25,15 +33,7 @@ class Volumedeck {
           showSpeedAndVolumeChangesInAndroidNotification,
       "useWakeLock": useAndroidWakeLock,
     });
-    _isInitialize = true;
-  }
 
-  static void setUpdateListener({
-    VoidCallback? onStart,
-    VoidCallback? onStop,
-    Function(bool status)? onLocationStatusChange,
-    Function(double speed, double volume)? onLocationUpdate,
-  }) {
     _messageConnector.setMessageHandler((dynamic message) async {
       var type = message["type"];
       var data = message["data"];
@@ -53,10 +53,15 @@ class Volumedeck {
       }
       return null;
     });
+
+    _isInitialize = true;
   }
 
-  static void removeUpdateListener() =>
-      _messageConnector.setMessageHandler(null);
+  static Future dispose() async {
+    await stop();
+    _messageConnector.setMessageHandler(null);
+    _isInitialize = false;
+  }
 
   static Future start() async {
     if (!_isInitialize) throw "Volumedeck not initialized";

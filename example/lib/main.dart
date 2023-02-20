@@ -27,9 +27,6 @@ class _MyAppState extends State<MyApp> {
       runInBackground: true,
       showStopButtonInAndroidNotification: true,
       showSpeedAndVolumeChangesInAndroidNotification: true,
-    );
-
-    Volumedeck.setUpdateListener(
       onLocationStatusChange: (bool status) {
         setState(() => isLocationOn = status);
       },
@@ -56,7 +53,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    Volumedeck.removeUpdateListener();
+    Volumedeck.dispose();
     super.dispose();
   }
 
