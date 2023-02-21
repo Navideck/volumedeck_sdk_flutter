@@ -9,9 +9,10 @@ class Volumedeck {
     StandardMessageCodec(),
   );
 
-  static bool _isInitialize = false;
+  static bool _isInitialized =
+      false; // TODO: Get the actual value from a method channel
 
-  /// call [initialize] once with required parameters
+  /// Call [initialize] once with required parameters
   static Future<void> initialize({
     bool runInBackground = false,
     bool showStopButtonInAndroidNotification = false,
@@ -23,7 +24,7 @@ class Volumedeck {
     Function(bool status)? onLocationStatusChange,
     Function(double speed, double volume)? onLocationUpdate,
   }) async {
-    if (_isInitialize) throw "Volumedeck already initialized";
+    if (_isInitialized) throw "Volumedeck already initialized";
 
     await _methodChannel.invokeMethod("initialize", {
       "runInBackground": runInBackground,
@@ -33,6 +34,8 @@ class Volumedeck {
           showSpeedAndVolumeChangesInAndroidNotification,
       "useWakeLock": useAndroidWakeLock,
     });
+    _isInitialized =
+        true; // TODO: Set it based on the return value of invokeMethod
 
     _messageConnector.setMessageHandler((dynamic message) async {
       var type = message["type"];
@@ -53,22 +56,20 @@ class Volumedeck {
       }
       return null;
     });
-
-    _isInitialize = true;
   }
 
   static Future dispose() async {
     _messageConnector.setMessageHandler(null);
-    _isInitialize = false;
+    _isInitialized = false;
   }
 
   static Future start() async {
-    if (!_isInitialize) throw "Volumedeck not initialized";
+    if (!_isInitialized) throw "Volumedeck not initialized";
     _methodChannel.invokeMethod('start');
   }
 
   static Future stop() {
-    if (!_isInitialize) throw "Volumedeck not initialized";
+    if (!_isInitialized) throw "Volumedeck not initialized";
     return _methodChannel.invokeMethod('stop');
   }
 }
