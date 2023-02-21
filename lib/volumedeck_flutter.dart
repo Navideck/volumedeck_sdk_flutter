@@ -58,7 +58,6 @@ class Volumedeck {
   }
 
   static Future dispose() async {
-    await stop();
     _messageConnector.setMessageHandler(null);
     _isInitialize = false;
   }
