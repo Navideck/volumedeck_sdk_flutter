@@ -22,8 +22,8 @@ class _MyAppState extends State<MyApp> {
   double speed = 0.0;
   double volume = 0.0;
 
-  void initializeVolumedeck() {
-    volumedeck = Volumedeck(
+  void initializeVolumedeck() async {
+    await Volumedeck.initialize(
       runInBackground: true,
       showStopButtonInAndroidNotification: true,
       showSpeedAndVolumeChangesInAndroidNotification: true,
@@ -49,6 +49,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     initializeVolumedeck();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    Volumedeck.dispose();
+    super.dispose();
   }
 
   @override
@@ -78,13 +84,13 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      volumedeck.start();
+                      Volumedeck.start();
                     },
                     child: const Text("Start"),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      volumedeck.stop();
+                      Volumedeck.stop();
                     },
                     child: const Text("Stop"),
                   ),

@@ -1,27 +1,42 @@
 import 'package:flutter/services.dart';
 
 class Volumedeck {
-  bool runInBackground;
-  bool showStopButtonInAndroidNotification;
-  bool showSpeedAndVolumeChangesInAndroidNotification;
-  bool useAndroidWakeLock;
-  String? activationKey;
-  VoidCallback? onStart;
-  VoidCallback? onStop;
-  Function(bool status)? onLocationStatusChange;
-  Function(double speed, double volume)? onLocationUpdate;
+  static const _methodChannel = MethodChannel(
+    '@com.navideck.volumedeck_flutter',
+  );
+  static const _messageConnector = BasicMessageChannel(
+    "@com.navideck.volumedeck_flutter/message_connector",
+    StandardMessageCodec(),
+  );
 
-  Volumedeck({
-    this.runInBackground = false,
-    this.showStopButtonInAndroidNotification = false,
-    this.showSpeedAndVolumeChangesInAndroidNotification = false,
-    this.useAndroidWakeLock = false,
-    this.activationKey,
-    this.onLocationStatusChange,
-    this.onStart,
-    this.onStop,
-    this.onLocationUpdate,
-  }) {
+  static bool _isInitialized =
+      false; // TODO: Get the actual value from a method channel
+
+  /// Call [initialize] once with required parameters
+  static Future<void> initialize({
+    bool runInBackground = false,
+    bool showStopButtonInAndroidNotification = false,
+    bool showSpeedAndVolumeChangesInAndroidNotification = false,
+    bool useAndroidWakeLock = false,
+    String? activationKey,
+    VoidCallback? onStart,
+    VoidCallback? onStop,
+    Function(bool status)? onLocationStatusChange,
+    Function(double speed, double volume)? onLocationUpdate,
+  }) async {
+    if (_isInitialized) throw "Volumedeck already initialized";
+
+    await _methodChannel.invokeMethod("initialize", {
+      "runInBackground": runInBackground,
+      "activationKey": activationKey,
+      "showStopButtonInNotification": showStopButtonInAndroidNotification,
+      "showSpeedAndVolumeChangesInNotification":
+          showSpeedAndVolumeChangesInAndroidNotification,
+      "useWakeLock": useAndroidWakeLock,
+    });
+    _isInitialized =
+        true; // TODO: Set it based on the return value of invokeMethod
+
     _messageConnector.setMessageHandler((dynamic message) async {
       var type = message["type"];
       var data = message["data"];
@@ -41,25 +56,20 @@ class Volumedeck {
       }
       return null;
     });
-    _methodChannel.invokeMethod("initialize", {
-      "runInBackground": runInBackground,
-      "activationKey": activationKey,
-      "showStopButtonInNotification": showStopButtonInAndroidNotification,
-      "showSpeedAndVolumeChangesInNotification":
-          showSpeedAndVolumeChangesInAndroidNotification,
-      "useWakeLock": useAndroidWakeLock,
-    });
   }
 
-  final _methodChannel = const MethodChannel(
-    '@com.navideck.volumedeck_flutter',
-  );
-  final _messageConnector = const BasicMessageChannel(
-    "@com.navideck.volumedeck_flutter/message_connector",
-    StandardMessageCodec(),
-  );
+  static Future dispose() async {
+    _messageConnector.setMessageHandler(null);
+    _isInitialized = false;
+  }
 
-  Future start() => _methodChannel.invokeMethod('start');
+  static Future start() async {
+    if (!_isInitialized) throw "Volumedeck not initialized";
+    _methodChannel.invokeMethod('start');
+  }
 
-  Future stop() => _methodChannel.invokeMethod('stop');
+  static Future stop() {
+    if (!_isInitialized) throw "Volumedeck not initialized";
+    return _methodChannel.invokeMethod('stop');
+  }
 }

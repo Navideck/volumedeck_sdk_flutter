@@ -41,7 +41,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         showStopButtonInNotification: Boolean,
         showSpeedAndVolumeChangesInNotification: Boolean,
         useWakeLock: Boolean,
-        activationKey: String?
+        activationKey: String?,
     ) {
         activity?.let {
             volumedeck = Volumedeck(
@@ -110,6 +110,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                     useWakeLock,
                     activationKey
                 )
+
                 result.success(null)
             }
             "start" -> {
