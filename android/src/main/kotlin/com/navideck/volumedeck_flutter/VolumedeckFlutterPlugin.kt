@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import com.navideck.volumedeck_android.Volumedeck
-import com.navideck.volumedeck_android.receiver.NotificationActionReceiver
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -24,6 +23,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
 
     private var mainThreadHandler: Handler? = null
     private var messageConnector: BasicMessageChannel<Any>? = null
+    private var volumedeck: Volumedeck? = null
 
     private fun sendMessage(type: String, data: Any? = null) {
         mainThreadHandler?.post {
@@ -33,14 +33,6 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                     "data" to data,
                 )
             )
-        }
-    }
-
-    companion object {
-        private var volumedeck: Volumedeck? = null
-        fun stop(activity: Activity) {
-            volumedeck?.stop(activity);
-            NotificationActionReceiver.service?.stopSelf()
         }
     }
 

@@ -9,8 +9,8 @@ class Volumedeck {
     StandardMessageCodec(),
   );
 
-  static bool _isInitialized =
-      false; // TODO: Get the actual value from a method channel
+  // TODO: Get the actual value from a method channel
+  static bool _isInitialized = false;
 
   /// Call [initialize] once with required parameters
   static Future<void> initialize({
@@ -34,8 +34,8 @@ class Volumedeck {
           showSpeedAndVolumeChangesInAndroidNotification,
       "useWakeLock": useAndroidWakeLock,
     });
-    _isInitialized =
-        true; // TODO: Set it based on the return value of invokeMethod
+    // TODO: Set it based on the return value of invokeMethod
+    _isInitialized = true;
 
     _messageConnector.setMessageHandler((dynamic message) async {
       var type = message["type"];
