@@ -43,6 +43,7 @@ class _MyAppState extends State<MyApp> {
         });
       },
     );
+    await Volumedeck.start();
   }
 
   @override
