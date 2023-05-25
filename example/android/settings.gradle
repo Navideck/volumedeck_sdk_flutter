@@ -12,3 +12,5 @@ apply from: "$flutterSdkPath/packages/flutter_tools/gradle/app_plugin_loader.gra
 
 include ':volumedeck'
 project(":volumedeck").projectDir = file("../../../volumedeck_sdk_android/volumedeck")
+include ':universal-volume'
+project(":universal-volume").projectDir = file("../../../../universal_volume/universal-volume")

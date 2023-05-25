@@ -46,4 +46,5 @@ android {
 }
 dependencies {
     implementation project(path: ':volumedeck')
+    implementation project(path: ':universal-volume')
 }
