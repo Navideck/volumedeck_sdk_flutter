@@ -40,7 +40,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         }
     }
 
-    fun setUniversalVolume(universalVolume: UniversalVolume) {
+    fun setUniversalVolumeInstance(universalVolume: UniversalVolume) {
         this.universalVolume = universalVolume
     }
 
