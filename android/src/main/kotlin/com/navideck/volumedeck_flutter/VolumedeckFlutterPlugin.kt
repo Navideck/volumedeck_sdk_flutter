@@ -1,9 +1,8 @@
 package com.navideck.volumedeck_flutter
 
-import android.app.Activity
 import android.os.Handler
 import android.os.Looper
-import androidx.annotation.NonNull
+import com.navideck.universal_volume.UniversalVolume
 import com.navideck.volumedeck_android.Volumedeck
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -16,14 +15,19 @@ import java.text.DecimalFormat
 
 
 /** VolumedeckFlutterPlugin */
-class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
-    PluginRegistry.RequestPermissionsResultListener {
+class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private lateinit var channel: MethodChannel
-    private var activity: Activity? = null
+    private var activityBinding: ActivityPluginBinding? = null
     private var volumedeck: Volumedeck? = null
     private lateinit var mainThreadHandler: Handler
     private lateinit var messageConnector: BasicMessageChannel<Any>
+    private var universalVolume: UniversalVolume? = null
+
+    companion object {
+        var instance: VolumedeckFlutterPlugin? = null
+    }
+
 
     private fun sendMessage(type: String, data: Any? = null) {
         mainThreadHandler.post {
@@ -36,6 +40,13 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         }
     }
 
+    /// It allows specifying the `UniversalVolume` instance, which can be used to share the same instance between
+    /// multiple plugins. This can be useful to save on resources and also prevent unexpected behavior on devices
+    /// that do not handle concurrency properly.
+    fun setUniversalVolumeInstance(universalVolume: UniversalVolume) {
+        this.universalVolume = universalVolume
+    }
+
     private fun initializeVolumedeck(
         runInBackground: Boolean,
         showStopButtonInNotification: Boolean,
@@ -43,9 +54,10 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         useWakeLock: Boolean,
         activationKey: String?,
     ) {
-        activity?.let {
+        activityBinding?.activity?.let {
             volumedeck = Volumedeck(
                 activity = it,
+                universalVolume = universalVolume,
                 runInBackground = runInBackground,
                 showStopButtonInNotification = showStopButtonInNotification,
                 showSpeedAndVolumeChangesInNotification = showSpeedAndVolumeChangesInNotification,
@@ -75,8 +87,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        activity = binding.activity
-        binding.addRequestPermissionsResultListener(this)
+        activityBinding = binding
     }
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -89,9 +100,11 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
             "@com.navideck.volumedeck_flutter/message_connector",
             StandardMessageCodec.INSTANCE
         )
+        instance = this
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
+        val activity = activityBinding?.activity
         when (call.method) {
             "initialize" -> {
                 val args = call.arguments as Map<*, *>
@@ -113,48 +126,39 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
 
                 result.success(null)
             }
+
             "start" -> {
                 activity?.let { volumedeck?.start(it) }
                 result.success(null)
             }
+
             "stop" -> {
                 activity?.let { volumedeck?.stop(it) }
                 result.success(null)
             }
+
             else -> {
                 result.notImplemented()
             }
         }
     }
 
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ): Boolean {
-        activity?.let {
-            volumedeck?.onRequestPermissionsResult(requestCode, grantResults, it)
-        }
-        return false
-    }
-
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        activity?.let { volumedeck?.stop(it) }
+        activityBinding?.activity?.let { volumedeck?.stop(it) }
         channel.setMethodCallHandler(null)
+        instance = null
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        activity = binding.activity
-        binding.addRequestPermissionsResultListener(this)
+        activityBinding = binding
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-        activity = null
+        activityBinding = null
     }
 
     override fun onDetachedFromActivity() {
-        activity?.let { volumedeck?.stop(it) }
-        activity = null
+        activityBinding?.activity?.let { volumedeck?.stop(it) }
+        activityBinding = null
     }
 }
