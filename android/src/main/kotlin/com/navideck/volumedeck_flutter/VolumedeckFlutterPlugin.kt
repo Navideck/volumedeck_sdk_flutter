@@ -40,6 +40,9 @@ class VolumedeckFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         }
     }
 
+    /// It allows specifying the `UniversalVolume` instance, which can be used to share the same instance between
+    /// multiple plugins. This can be useful to save on resources and also prevent unexpected behavior on devices
+    /// that do not handle concurrency properly.
     fun setUniversalVolumeInstance(universalVolume: UniversalVolume) {
         this.universalVolume = universalVolume
     }
