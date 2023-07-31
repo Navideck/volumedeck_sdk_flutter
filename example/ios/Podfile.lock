@@ -1,28 +1,22 @@
 PODS:
   - Flutter (1.0.0)
-  - Volumedeck (0.0.1)
   - volumedeck_flutter (0.0.1):
     - Flutter
-    - Volumedeck
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - Volumedeck (from `../../../volumedeck_sdk_ios`)
   - volumedeck_flutter (from `.symlinks/plugins/volumedeck_flutter/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  Volumedeck:
-    :path: "../../../volumedeck_sdk_ios"
   volumedeck_flutter:
     :path: ".symlinks/plugins/volumedeck_flutter/ios"
 
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  Volumedeck: dd38030f66028365190e5085c556d7d3477f3664
-  volumedeck_flutter: 95b4ad56373261d7553d35dd35da06cf16c8fbaa
+  volumedeck_flutter: 625a406fdc7d2dd02309c82b05f7a3cfe4e34651
 
-PODFILE CHECKSUM: 1f39b50a69d98c16c9636cb494f17c9a05ef1a1a
+PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1

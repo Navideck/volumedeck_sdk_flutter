@@ -1,6 +1,6 @@
 import Flutter
 import UIKit
-import Volumedeck
+import VolumedeckiOS
 
 public class SwiftVolumedeckFlutterPlugin: NSObject, FlutterPlugin {
     var volumedeck: Volumedeck?
@@ -23,10 +23,10 @@ public class SwiftVolumedeckFlutterPlugin: NSObject, FlutterPlugin {
             initializeVolumedeck(runInBackground: runInBackground,activationKey: activationKey)
             result(nil)
         case "start":
-            volumedeck?.isOn = true
+            volumedeck?.start()
             result(nil)
         case "stop":
-            volumedeck?.isOn = false
+            volumedeck?.stop()
             sendMessage(type: "onStop")
             result(nil)
         default:
