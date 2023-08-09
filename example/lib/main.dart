@@ -25,9 +25,10 @@ class _MyAppState extends State<MyApp> {
   void initializeVolumedeck() async {
     await Volumedeck.initialize(
       runInBackground: true,
+      autoStart: false,
       showStopButtonInAndroidNotification: true,
       showSpeedAndVolumeChangesInAndroidNotification: true,
-      onLocationStatusChange: (bool status) {
+      locationServicesStatusChange: (bool status) {
         setState(() => isLocationOn = status);
       },
       onStart: () {
@@ -43,18 +44,13 @@ class _MyAppState extends State<MyApp> {
         });
       },
     );
+  
   }
 
   @override
   void initState() {
     initializeVolumedeck();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    Volumedeck.dispose();
-    super.dispose();
   }
 
   @override
