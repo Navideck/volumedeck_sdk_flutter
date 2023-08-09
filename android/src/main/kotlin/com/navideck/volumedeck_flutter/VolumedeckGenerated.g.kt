@@ -129,18 +129,6 @@ class VolumedeckCallback(private val binaryMessenger: BinaryMessenger) {
       StandardMessageCodec()
     }
   }
-  fun onStart(callback: () -> Unit) {
-    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStart", codec)
-    channel.send(null) {
-      callback()
-    }
-  }
-  fun onStop(callback: () -> Unit) {
-    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStop", codec)
-    channel.send(null) {
-      callback()
-    }
-  }
   fun onLocationStatusChange(statusArg: Boolean, callback: () -> Unit) {
     val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onLocationStatusChange", codec)
     channel.send(listOf(statusArg)) {
@@ -150,6 +138,18 @@ class VolumedeckCallback(private val binaryMessenger: BinaryMessenger) {
   fun onLocationUpdate(speedArg: Double, volumeArg: Double, callback: () -> Unit) {
     val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onLocationUpdate", codec)
     channel.send(listOf(speedArg, volumeArg)) {
+      callback()
+    }
+  }
+  fun onStart(callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStart", codec)
+    channel.send(null) {
+      callback()
+    }
+  }
+  fun onStop(callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStop", codec)
+    channel.send(null) {
       callback()
     }
   }

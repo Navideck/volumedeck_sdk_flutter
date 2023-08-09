@@ -33,8 +33,8 @@ abstract class VolumedeckChannel {
 
 @FlutterApi()
 abstract class VolumedeckCallback {
-  void onStart();
-  void onStop();
   void onLocationStatusChange(bool status);
   void onLocationUpdate(double speed, double volume);
+  void onStart();
+  void onStop();
 }

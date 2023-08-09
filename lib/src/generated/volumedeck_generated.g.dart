@@ -89,43 +89,15 @@ class VolumedeckChannel {
 abstract class VolumedeckCallback {
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
-  void onStart();
-
-  void onStop();
-
   void onLocationStatusChange(bool status);
 
   void onLocationUpdate(double speed, double volume);
 
+  void onStart();
+
+  void onStop();
+
   static void setup(VolumedeckCallback? api, {BinaryMessenger? binaryMessenger}) {
-    {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStart', codec,
-          binaryMessenger: binaryMessenger);
-      if (api == null) {
-        channel.setMessageHandler(null);
-      } else {
-        channel.setMessageHandler((Object? message) async {
-          // ignore message
-          api.onStart();
-          return;
-        });
-      }
-    }
-    {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStop', codec,
-          binaryMessenger: binaryMessenger);
-      if (api == null) {
-        channel.setMessageHandler(null);
-      } else {
-        channel.setMessageHandler((Object? message) async {
-          // ignore message
-          api.onStop();
-          return;
-        });
-      }
-    }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
           'dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onLocationStatusChange', codec,
@@ -163,6 +135,34 @@ abstract class VolumedeckCallback {
           assert(arg_volume != null,
               'Argument for dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onLocationUpdate was null, expected non-null double.');
           api.onLocationUpdate(arg_speed!, arg_volume!);
+          return;
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStart', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          // ignore message
+          api.onStart();
+          return;
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStop', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          // ignore message
+          api.onStop();
           return;
         });
       }

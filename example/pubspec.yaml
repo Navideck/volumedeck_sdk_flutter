@@ -1,5 +1,6 @@
 name: volumedeck_flutter_example
 description: Demonstrates how to use the volumedeck_flutter plugin.
+version: 0.0.1+1
 publish_to: "none"
 
 environment:

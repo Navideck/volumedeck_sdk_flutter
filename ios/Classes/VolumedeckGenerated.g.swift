@@ -100,18 +100,6 @@ class VolumedeckCallback {
   init(binaryMessenger: FlutterBinaryMessenger){
     self.binaryMessenger = binaryMessenger
   }
-  func onStart(completion: @escaping () -> Void) {
-    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStart", binaryMessenger: binaryMessenger)
-    channel.sendMessage(nil) { _ in
-      completion()
-    }
-  }
-  func onStop(completion: @escaping () -> Void) {
-    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStop", binaryMessenger: binaryMessenger)
-    channel.sendMessage(nil) { _ in
-      completion()
-    }
-  }
   func onLocationStatusChange(status statusArg: Bool, completion: @escaping () -> Void) {
     let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onLocationStatusChange", binaryMessenger: binaryMessenger)
     channel.sendMessage([statusArg] as [Any?]) { _ in
@@ -121,6 +109,18 @@ class VolumedeckCallback {
   func onLocationUpdate(speed speedArg: Double, volume volumeArg: Double, completion: @escaping () -> Void) {
     let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onLocationUpdate", binaryMessenger: binaryMessenger)
     channel.sendMessage([speedArg, volumeArg] as [Any?]) { _ in
+      completion()
+    }
+  }
+  func onStart(completion: @escaping () -> Void) {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStart", binaryMessenger: binaryMessenger)
+    channel.sendMessage(nil) { _ in
+      completion()
+    }
+  }
+  func onStop(completion: @escaping () -> Void) {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.volumedeck_flutter.VolumedeckCallback.onStop", binaryMessenger: binaryMessenger)
+    channel.sendMessage(nil) { _ in
       completion()
     }
   }

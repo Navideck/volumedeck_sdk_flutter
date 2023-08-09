@@ -11,11 +11,11 @@ class Volumedeck {
     bool runInBackground = false,
     bool showStopButtonInAndroidNotification = false,
     bool showSpeedAndVolumeChangesInAndroidNotification = false,
-    String? activationKey,
-    VoidCallback? onStart,
-    VoidCallback? onStop,
     Function(bool status)? locationServicesStatusChange,
     Function(double speed, double volume)? onLocationUpdate,
+    VoidCallback? onStart,
+    VoidCallback? onStop,
+    String? activationKey,
   }) async {
     if (_isInitialized) throw "Volumedeck already initialized";
     await _channel.initialize(
