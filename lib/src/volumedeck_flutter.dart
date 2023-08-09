@@ -34,12 +34,12 @@ class Volumedeck {
     _isInitialized = true;
   }
 
-  static Future start() async {
+  static Future<void> start() async {
     _ensureInitialized();
     await _channel.start();
   }
 
-  static Future stop() async {
+  static Future<void> stop() async {
     _ensureInitialized();
     await _channel.stop();
   }
