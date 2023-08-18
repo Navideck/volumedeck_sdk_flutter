@@ -1,6 +1,6 @@
 PODS:
   - Flutter (1.0.0)
-  - volumedeck_flutter (0.0.1):
+  - volumedeck_flutter (1.0.0):
     - Flutter
 
 DEPENDENCIES:
