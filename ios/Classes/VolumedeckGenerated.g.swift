@@ -37,7 +37,7 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 ///
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol VolumedeckChannel {
-  func initialize(autoStart: Bool, runInBackground: Bool, showStopButtonInAndroidNotification: Bool, showSpeedAndVolumeChangesInAndroidNotification: Bool, androidActivationKey: String?, iosActivationKey: String?) throws
+  func initialize(autoStart: Bool, runInBackground: Bool, showStopButtonInAndroidNotification: Bool, showSpeedAndVolumeChangesInAndroidNotification: Bool, androidActivationKey: String?, iOSActivationKey: String?) throws
   func start() throws
   func stop() throws
 }
@@ -56,9 +56,9 @@ class VolumedeckChannelSetup {
         let showStopButtonInAndroidNotificationArg = args[2] as! Bool
         let showSpeedAndVolumeChangesInAndroidNotificationArg = args[3] as! Bool
         let androidActivationKeyArg: String? = nilOrValue(args[4])
-        let iosActivationKeyArg: String? = nilOrValue(args[5])
+        let iOSActivationKeyArg: String? = nilOrValue(args[5])
         do {
-          try api.initialize(autoStart: autoStartArg, runInBackground: runInBackgroundArg, showStopButtonInAndroidNotification: showStopButtonInAndroidNotificationArg, showSpeedAndVolumeChangesInAndroidNotification: showSpeedAndVolumeChangesInAndroidNotificationArg, androidActivationKey: androidActivationKeyArg, iosActivationKey: iosActivationKeyArg)
+          try api.initialize(autoStart: autoStartArg, runInBackground: runInBackgroundArg, showStopButtonInAndroidNotification: showStopButtonInAndroidNotificationArg, showSpeedAndVolumeChangesInAndroidNotification: showSpeedAndVolumeChangesInAndroidNotificationArg, androidActivationKey: androidActivationKeyArg, iOSActivationKey: iOSActivationKeyArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))

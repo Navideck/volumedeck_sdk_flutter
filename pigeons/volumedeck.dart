@@ -24,7 +24,7 @@ abstract class VolumedeckChannel {
     bool showStopButtonInAndroidNotification,
     bool showSpeedAndVolumeChangesInAndroidNotification,
     String? androidActivationKey,
-    String? iosActivationKey,
+    String? iOSActivationKey,
   );
 
   void start();

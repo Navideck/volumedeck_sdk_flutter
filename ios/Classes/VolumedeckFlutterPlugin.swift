@@ -22,7 +22,7 @@ private class VolumedeckChannelHandler: NSObject, VolumedeckChannel {
     showStopButtonInAndroidNotification _: Bool,
     showSpeedAndVolumeChangesInAndroidNotification _: Bool,
     androidActivationKey: String?,
-    iosActivationKey: String?
+    iOSActivationKey: String?
   ) throws {
     volumedeck = Volumedeck(
       runInBackground: runInBackground,
@@ -38,7 +38,7 @@ private class VolumedeckChannelHandler: NSObject, VolumedeckChannel {
       onStop: {
         self.volumedeckCallback.onStop {}
       },
-      activationKey: iosActivationKey,
+      activationKey: iOSActivationKey,
       autoStart: autoStart
     )
   }

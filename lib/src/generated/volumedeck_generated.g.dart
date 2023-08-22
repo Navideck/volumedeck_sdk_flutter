@@ -19,12 +19,12 @@ class VolumedeckChannel {
 
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
-  Future<void> initialize(bool arg_autoStart, bool arg_runInBackground, bool arg_showStopButtonInAndroidNotification, bool arg_showSpeedAndVolumeChangesInAndroidNotification, String? arg_androidActivationKey, String? arg_iosActivationKey) async {
+  Future<void> initialize(bool arg_autoStart, bool arg_runInBackground, bool arg_showStopButtonInAndroidNotification, bool arg_showSpeedAndVolumeChangesInAndroidNotification, String? arg_androidActivationKey, String? arg_iOSActivationKey) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.volumedeck_flutter.VolumedeckChannel.initialize', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_autoStart, arg_runInBackground, arg_showStopButtonInAndroidNotification, arg_showSpeedAndVolumeChangesInAndroidNotification, arg_androidActivationKey, arg_iosActivationKey]) as List<Object?>?;
+        await channel.send(<Object?>[arg_autoStart, arg_runInBackground, arg_showStopButtonInAndroidNotification, arg_showSpeedAndVolumeChangesInAndroidNotification, arg_androidActivationKey, arg_iOSActivationKey]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',

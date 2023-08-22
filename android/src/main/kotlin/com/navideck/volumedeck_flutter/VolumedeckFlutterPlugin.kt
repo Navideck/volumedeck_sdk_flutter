@@ -29,7 +29,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, VolumedeckChannel, ActivityAware 
         showStopButtonInAndroidNotification: Boolean,
         showSpeedAndVolumeChangesInAndroidNotification: Boolean,
         androidActivationKey: String?,
-        iosActivationKey: String?
+        iOSActivationKey: String?
     ) {
         val activity = activityBinding?.activity ?: throw Exception("Activity is null")
         volumedeck = Volumedeck(
