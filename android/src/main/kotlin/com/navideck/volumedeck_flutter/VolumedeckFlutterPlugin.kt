@@ -28,7 +28,8 @@ class VolumedeckFlutterPlugin : FlutterPlugin, VolumedeckChannel, ActivityAware 
         runInBackground: Boolean,
         showStopButtonInAndroidNotification: Boolean,
         showSpeedAndVolumeChangesInAndroidNotification: Boolean,
-        activationKey: String?
+        androidActivationKey: String?,
+        iosActivationKey: String?
     ) {
         val activity = activityBinding?.activity ?: throw Exception("Activity is null")
         volumedeck = Volumedeck(
@@ -37,7 +38,7 @@ class VolumedeckFlutterPlugin : FlutterPlugin, VolumedeckChannel, ActivityAware 
             runInBackground = runInBackground,
             showStopButtonInNotification = showStopButtonInAndroidNotification,
             showSpeedAndVolumeChangesInNotification = showSpeedAndVolumeChangesInAndroidNotification,
-            activationKey = activationKey,
+            activationKey = androidActivationKey,
             locationServicesStatusChange = { isOn: Boolean ->
                 volumedeckCallback?.onLocationStatusChange(isOn) {}
             },

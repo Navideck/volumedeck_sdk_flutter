@@ -48,7 +48,7 @@ class FlutterError (
  * Generated interface from Pigeon that represents a handler of messages from Flutter.
  */
 interface VolumedeckChannel {
-  fun initialize(autoStart: Boolean, runInBackground: Boolean, showStopButtonInAndroidNotification: Boolean, showSpeedAndVolumeChangesInAndroidNotification: Boolean, activationKey: String?)
+  fun initialize(autoStart: Boolean, runInBackground: Boolean, showStopButtonInAndroidNotification: Boolean, showSpeedAndVolumeChangesInAndroidNotification: Boolean, androidActivationKey: String?, iosActivationKey: String?)
   fun start()
   fun stop()
 
@@ -69,10 +69,11 @@ interface VolumedeckChannel {
             val runInBackgroundArg = args[1] as Boolean
             val showStopButtonInAndroidNotificationArg = args[2] as Boolean
             val showSpeedAndVolumeChangesInAndroidNotificationArg = args[3] as Boolean
-            val activationKeyArg = args[4] as String?
+            val androidActivationKeyArg = args[4] as String?
+            val iosActivationKeyArg = args[5] as String?
             var wrapped: List<Any?>
             try {
-              api.initialize(autoStartArg, runInBackgroundArg, showStopButtonInAndroidNotificationArg, showSpeedAndVolumeChangesInAndroidNotificationArg, activationKeyArg)
+              api.initialize(autoStartArg, runInBackgroundArg, showStopButtonInAndroidNotificationArg, showSpeedAndVolumeChangesInAndroidNotificationArg, androidActivationKeyArg, iosActivationKeyArg)
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)

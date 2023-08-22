@@ -15,7 +15,8 @@ class Volumedeck {
     Function(double speed, double volume)? onLocationUpdate,
     VoidCallback? onStart,
     VoidCallback? onStop,
-    String? activationKey,
+    String? androidActivationKey,
+    String? iosActivationKey,
   }) async {
     if (_isInitialized) throw "Volumedeck already initialized";
     await _channel.initialize(
@@ -23,7 +24,8 @@ class Volumedeck {
       runInBackground,
       showStopButtonInAndroidNotification,
       showSpeedAndVolumeChangesInAndroidNotification,
-      activationKey,
+      androidActivationKey,
+      iosActivationKey,
     );
     VolumedeckCallback.setup(_VolumedeckCallbackHandler(
       startCallback: onStart,
