@@ -51,7 +51,7 @@ Volumedeck.stop();
 
 ## API reference
 
-You can find the API reference [here](https://navideck.github.io/volumedeck_sdk_flutter/doc).
+You can find the API reference [here](https://pub.dev/documentation/volumedeck_flutter/latest/).
 
 ## Free to Use
 

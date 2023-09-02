@@ -1,3 +1,6 @@
+## 1.1.2
+Update docs location
+
 ## 1.1.1
 * update docs
 
