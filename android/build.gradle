@@ -46,6 +46,6 @@ android {
     }
 }
 dependencies {
-    implementation 'com.github.Navideck:Volumedeck-Android:1.0.1'
+    implementation 'com.github.Navideck:Volumedeck-Android:1.3.0'
     implementation 'com.github.Navideck:Universal-Volume:1.1.2'
 }
