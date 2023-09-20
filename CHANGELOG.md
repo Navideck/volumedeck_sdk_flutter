@@ -1,3 +1,6 @@
+## 1.1.4
+* Bump android native libraries to 1.4.0
+
 ## 1.1.3
 * Bump native libraries to 1.3.0
 
