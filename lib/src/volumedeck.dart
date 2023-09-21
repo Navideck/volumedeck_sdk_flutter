@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:volumedeck_flutter/src/generated/volumedeck_generated.g.dart';
+import 'package:volumedeck_flutter/volumedeck_flutter.dart';
 
 /// Volumedeck provides automatic volume adjustment based on GPS speed,
 /// improving the media-listening experience for users in vehicles and public transport.
@@ -16,9 +17,7 @@ class Volumedeck {
   ///
   /// [runInBackground] - Whether to run Volumedeck in the background or not.
   ///
-  /// [showStopButtonInAndroidNotification] - Whether to show the stop button in the notification or not.
-  ///
-  /// [showSpeedAndVolumeChangesInAndroidNotification] - Whether to show speed and volume changes in the notification or not.
+  /// [androidConfig] - @see [AndroidConfig] for android specific configurations.
   ///
   /// [locationServicesStatusChange] - Callback function to be called when location status changes.
   ///
@@ -33,8 +32,7 @@ class Volumedeck {
   /// Throws an exception if Volumedeck is already initialized.
   static Future<void> initialize({
     bool runInBackground = false,
-    bool showStopButtonInAndroidNotification = false,
-    bool showSpeedAndVolumeChangesInAndroidNotification = false,
+    AndroidConfig? androidConfig,
     Function(bool status)? locationServicesStatusChange,
     Function(double speed, double volume)? onLocationUpdate,
     VoidCallback? onStart,
@@ -47,8 +45,16 @@ class Volumedeck {
     await _channel.initialize(
       autoStart,
       runInBackground,
-      showStopButtonInAndroidNotification,
-      showSpeedAndVolumeChangesInAndroidNotification,
+      NativeAndroidConfig(
+        showStopButtonInNotification:
+            androidConfig?.showStopButtonInNotification,
+        showSpeedAndVolumeChangesInNotification:
+            androidConfig?.showSpeedAndVolumeChangesInNotification,
+        notificationTitle: androidConfig?.notificationTitle,
+        notificationSubtitleFormat: androidConfig?.notificationSubtitleFormat,
+        notificationStopButtonText: androidConfig?.notificationStopButtonText,
+        notificationIconDrawable: androidConfig?.notificationIconDrawable,
+      ),
       androidActivationKey,
       iOSActivationKey,
     );
@@ -69,6 +75,12 @@ class Volumedeck {
   static Future<void> stop() async {
     _ensureInitialized();
     await _channel.stop();
+  }
+
+  /// Sets the mock speed for testing
+  static Future<void> setMockSpeed(int speed) async {
+    _ensureInitialized();
+    await _channel.setMockSpeed(speed);
   }
 
   static void _ensureInitialized() {

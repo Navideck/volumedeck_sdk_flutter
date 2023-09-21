@@ -24,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   bool isLocationOn = false;
   bool isStarted = false;
   double speed = 0.0;
+  double mockSpeed = 0.0;
   double volume = 0.0;
 
   Future<bool> hasPermissions() async {
@@ -50,8 +51,14 @@ class _MyAppState extends State<MyApp> {
       iOSActivationKey: iOSActivationKey,
       runInBackground: true,
       autoStart: false,
-      showStopButtonInAndroidNotification: true,
-      showSpeedAndVolumeChangesInAndroidNotification: true,
+      androidConfig: AndroidConfig(
+        notificationTitle: "Volumedeck is running in background",
+        notificationStopButtonText: "Stop Volumedeck",
+        showStopButtonInNotification: true,
+        notificationSubtitleFormat: "Speed -> %s m/s | Volume -> %s ",
+        showSpeedAndVolumeChangesInNotification: true,
+        notificationIconDrawable: "notification_icon",
+      ),
       locationServicesStatusChange: (bool status) {
         setState(() => isLocationOn = status);
       },
@@ -127,6 +134,22 @@ class _MyAppState extends State<MyApp> {
               ListTile(
                 title: const Text("Volume"),
                 trailing: Text(volume.toString()),
+              ),
+              const Divider(),
+              const Padding(
+                padding: EdgeInsets.only(left: 18.0),
+                child: Text("Mock Speed"),
+              ),
+              Slider(
+                min: 0,
+                max: 50,
+                value: mockSpeed,
+                onChanged: (value) {
+                  Volumedeck.setMockSpeed(value.toInt());
+                  setState(() {
+                    mockSpeed = value;
+                  });
+                },
               )
             ],
           )),

@@ -8,6 +8,75 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
 
+class NativeAndroidConfig {
+  NativeAndroidConfig({
+    this.showStopButtonInNotification,
+    this.showSpeedAndVolumeChangesInNotification,
+    this.notificationTitle,
+    this.notificationSubtitleFormat,
+    this.notificationStopButtonText,
+    this.notificationIconDrawable,
+  });
+
+  bool? showStopButtonInNotification;
+
+  bool? showSpeedAndVolumeChangesInNotification;
+
+  String? notificationTitle;
+
+  String? notificationSubtitleFormat;
+
+  String? notificationStopButtonText;
+
+  String? notificationIconDrawable;
+
+  Object encode() {
+    return <Object?>[
+      showStopButtonInNotification,
+      showSpeedAndVolumeChangesInNotification,
+      notificationTitle,
+      notificationSubtitleFormat,
+      notificationStopButtonText,
+      notificationIconDrawable,
+    ];
+  }
+
+  static NativeAndroidConfig decode(Object result) {
+    result as List<Object?>;
+    return NativeAndroidConfig(
+      showStopButtonInNotification: result[0] as bool?,
+      showSpeedAndVolumeChangesInNotification: result[1] as bool?,
+      notificationTitle: result[2] as String?,
+      notificationSubtitleFormat: result[3] as String?,
+      notificationStopButtonText: result[4] as String?,
+      notificationIconDrawable: result[5] as String?,
+    );
+  }
+}
+
+class _VolumedeckChannelCodec extends StandardMessageCodec {
+  const _VolumedeckChannelCodec();
+  @override
+  void writeValue(WriteBuffer buffer, Object? value) {
+    if (value is NativeAndroidConfig) {
+      buffer.putUint8(128);
+      writeValue(buffer, value.encode());
+    } else {
+      super.writeValue(buffer, value);
+    }
+  }
+
+  @override
+  Object? readValueOfType(int type, ReadBuffer buffer) {
+    switch (type) {
+      case 128: 
+        return NativeAndroidConfig.decode(readValue(buffer)!);
+      default:
+        return super.readValueOfType(type, buffer);
+    }
+  }
+}
+
 /// Volumedeck
 class VolumedeckChannel {
   /// Constructor for [VolumedeckChannel].  The [binaryMessenger] named argument is
@@ -17,14 +86,14 @@ class VolumedeckChannel {
       : _binaryMessenger = binaryMessenger;
   final BinaryMessenger? _binaryMessenger;
 
-  static const MessageCodec<Object?> codec = StandardMessageCodec();
+  static const MessageCodec<Object?> codec = _VolumedeckChannelCodec();
 
-  Future<void> initialize(bool arg_autoStart, bool arg_runInBackground, bool arg_showStopButtonInAndroidNotification, bool arg_showSpeedAndVolumeChangesInAndroidNotification, String? arg_androidActivationKey, String? arg_iOSActivationKey) async {
+  Future<void> initialize(bool arg_autoStart, bool arg_runInBackground, NativeAndroidConfig? arg_nativeAndroidConfig, String? arg_androidActivationKey, String? arg_iOSActivationKey) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.volumedeck_flutter.VolumedeckChannel.initialize', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_autoStart, arg_runInBackground, arg_showStopButtonInAndroidNotification, arg_showSpeedAndVolumeChangesInAndroidNotification, arg_androidActivationKey, arg_iOSActivationKey]) as List<Object?>?;
+        await channel.send(<Object?>[arg_autoStart, arg_runInBackground, arg_nativeAndroidConfig, arg_androidActivationKey, arg_iOSActivationKey]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -69,6 +138,28 @@ class VolumedeckChannel {
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(null) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
+  Future<void> setMockSpeed(int arg_speed) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.volumedeck_flutter.VolumedeckChannel.setMockSpeed', codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_speed]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',

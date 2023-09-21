@@ -19,8 +19,7 @@ private class VolumedeckChannelHandler: NSObject, VolumedeckChannel {
   func initialize(
     autoStart: Bool,
     runInBackground: Bool,
-    showStopButtonInAndroidNotification _: Bool,
-    showSpeedAndVolumeChangesInAndroidNotification _: Bool,
+    nativeAndroidConfig: NativeAndroidConfig?,
     androidActivationKey: String?,
     iOSActivationKey: String?
   ) throws {
@@ -49,5 +48,9 @@ private class VolumedeckChannelHandler: NSObject, VolumedeckChannel {
 
   func stop() throws {
     volumedeck?.stop()
+  }
+
+  func setMockSpeed(speed: Int64) throws {
+    volumedeck?.mockSpeed(speed: Double(speed))
   }
 }
