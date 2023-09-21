@@ -1,5 +1,6 @@
 package com.navideck.volumedeck_flutter
 
+import android.app.Activity
 import com.navideck.universal_volume.UniversalVolume
 import com.navideck.volumedeck_android.Volumedeck
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -26,18 +27,27 @@ class VolumedeckFlutterPlugin : FlutterPlugin, VolumedeckChannel, ActivityAware 
     override fun initialize(
         autoStart: Boolean,
         runInBackground: Boolean,
-        showStopButtonInAndroidNotification: Boolean,
-        showSpeedAndVolumeChangesInAndroidNotification: Boolean,
+        nativeAndroidConfig: NativeAndroidConfig?,
         androidActivationKey: String?,
-        iOSActivationKey: String?
+        iOSActivationKey: String?,
     ) {
         val activity = activityBinding?.activity ?: throw Exception("Activity is null")
         volumedeck = Volumedeck(
             activity = activity,
             autoStart = autoStart,
             runInBackground = runInBackground,
-            showStopButtonInNotification = showStopButtonInAndroidNotification,
-            showSpeedAndVolumeChangesInNotification = showSpeedAndVolumeChangesInAndroidNotification,
+            showStopButtonInNotification = nativeAndroidConfig?.showStopButtonInNotification
+                ?: false,
+            showSpeedAndVolumeChangesInNotification = nativeAndroidConfig?.showSpeedAndVolumeChangesInNotification
+                ?: false,
+            notificationTitle = nativeAndroidConfig?.notificationTitle,
+            notificationSubtitleFormat = nativeAndroidConfig?.notificationSubtitleFormat,
+            notificationStopButtonText = nativeAndroidConfig?.notificationStopButtonText,
+            notificationIcon = nativeAndroidConfig?.notificationIconDrawable?.let {
+                activity.getDrawable(
+                    it
+                )
+            },
             activationKey = androidActivationKey,
             locationServicesStatusChange = { isOn: Boolean ->
                 volumedeckCallback?.onLocationStatusChange(isOn) {}
@@ -65,6 +75,12 @@ class VolumedeckFlutterPlugin : FlutterPlugin, VolumedeckChannel, ActivityAware 
         volumedeck?.stop()
     }
 
+    override fun setMockSpeed(speed: Long) {
+        activityBinding?.activity?.applicationContext?.let {
+            volumedeck?.setMockSpeed(it, speed.toFloat())
+        }
+    }
+
     /// It allows specifying the `UniversalVolume` instance, which can be used to share the same instance between
     /// multiple plugins. This can be useful to save on resources and also prevent unexpected behavior on devices
     /// that do not handle concurrency properly.
@@ -86,4 +102,16 @@ class VolumedeckFlutterPlugin : FlutterPlugin, VolumedeckChannel, ActivityAware 
     override fun onDetachedFromActivity() {}
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {}
     override fun onDetachedFromActivityForConfigChanges() {}
+
+    private fun Activity.getDrawable(name: String): Int? {
+        return try {
+            this.applicationContext.resources?.getIdentifier(
+                name,
+                "drawable",
+                this.applicationContext.packageName
+            )
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

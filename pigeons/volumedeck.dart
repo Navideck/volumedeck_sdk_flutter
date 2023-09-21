@@ -21,8 +21,7 @@ abstract class VolumedeckChannel {
   void initialize(
     bool autoStart,
     bool runInBackground,
-    bool showStopButtonInAndroidNotification,
-    bool showSpeedAndVolumeChangesInAndroidNotification,
+    NativeAndroidConfig? nativeAndroidConfig,
     String? androidActivationKey,
     String? iOSActivationKey,
   );
@@ -30,6 +29,8 @@ abstract class VolumedeckChannel {
   void start();
 
   void stop();
+
+  void setMockSpeed(int speed);
 }
 
 @FlutterApi()
@@ -38,4 +39,13 @@ abstract class VolumedeckCallback {
   void onLocationUpdate(double speed, double volume);
   void onStart();
   void onStop();
+}
+
+class NativeAndroidConfig {
+  bool? showStopButtonInNotification;
+  bool? showSpeedAndVolumeChangesInNotification;
+  String? notificationTitle;
+  String? notificationSubtitleFormat;
+  String? notificationStopButtonText;
+  String? notificationIconDrawable;
 }

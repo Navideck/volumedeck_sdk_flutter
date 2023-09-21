@@ -25,9 +25,8 @@ First configure your [Android](https://github.com/Navideck/Volumedeck-Android#ru
 
 ```dart
 Volumedeck.initialize(
-    runInBackground: true, // Set to false if you don't want to start volumedeck on initialization
-    showStopButtonInAndroidNotification: true,
-    showSpeedAndVolumeChangesInAndroidNotification: true,
+    runInBackground: true, 
+    autoStart: true // Set to false if you don't want to start volumedeck on initialization
     locationServicesStatusChange: (bool status) {
       // Get location on/off status updates
     },

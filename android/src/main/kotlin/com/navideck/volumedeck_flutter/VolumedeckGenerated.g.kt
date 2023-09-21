@@ -42,20 +42,78 @@ class FlutterError (
   override val message: String? = null,
   val details: Any? = null
 ) : Throwable()
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class NativeAndroidConfig (
+  val showStopButtonInNotification: Boolean? = null,
+  val showSpeedAndVolumeChangesInNotification: Boolean? = null,
+  val notificationTitle: String? = null,
+  val notificationSubtitleFormat: String? = null,
+  val notificationStopButtonText: String? = null,
+  val notificationIconDrawable: String? = null
+
+) {
+  companion object {
+    @Suppress("UNCHECKED_CAST")
+    fun fromList(list: List<Any?>): NativeAndroidConfig {
+      val showStopButtonInNotification = list[0] as Boolean?
+      val showSpeedAndVolumeChangesInNotification = list[1] as Boolean?
+      val notificationTitle = list[2] as String?
+      val notificationSubtitleFormat = list[3] as String?
+      val notificationStopButtonText = list[4] as String?
+      val notificationIconDrawable = list[5] as String?
+      return NativeAndroidConfig(showStopButtonInNotification, showSpeedAndVolumeChangesInNotification, notificationTitle, notificationSubtitleFormat, notificationStopButtonText, notificationIconDrawable)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf<Any?>(
+      showStopButtonInNotification,
+      showSpeedAndVolumeChangesInNotification,
+      notificationTitle,
+      notificationSubtitleFormat,
+      notificationStopButtonText,
+      notificationIconDrawable,
+    )
+  }
+}
+@Suppress("UNCHECKED_CAST")
+private object VolumedeckChannelCodec : StandardMessageCodec() {
+  override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
+    return when (type) {
+      128.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          NativeAndroidConfig.fromList(it)
+        }
+      }
+      else -> super.readValueOfType(type, buffer)
+    }
+  }
+  override fun writeValue(stream: ByteArrayOutputStream, value: Any?)   {
+    when (value) {
+      is NativeAndroidConfig -> {
+        stream.write(128)
+        writeValue(stream, value.toList())
+      }
+      else -> super.writeValue(stream, value)
+    }
+  }
+}
+
 /**
  * Volumedeck
  *
  * Generated interface from Pigeon that represents a handler of messages from Flutter.
  */
 interface VolumedeckChannel {
-  fun initialize(autoStart: Boolean, runInBackground: Boolean, showStopButtonInAndroidNotification: Boolean, showSpeedAndVolumeChangesInAndroidNotification: Boolean, androidActivationKey: String?, iOSActivationKey: String?)
+  fun initialize(autoStart: Boolean, runInBackground: Boolean, nativeAndroidConfig: NativeAndroidConfig?, androidActivationKey: String?, iOSActivationKey: String?)
   fun start()
   fun stop()
+  fun setMockSpeed(speed: Long)
 
   companion object {
     /** The codec used by VolumedeckChannel. */
     val codec: MessageCodec<Any?> by lazy {
-      StandardMessageCodec()
+      VolumedeckChannelCodec
     }
     /** Sets up an instance of `VolumedeckChannel` to handle messages through the `binaryMessenger`. */
     @Suppress("UNCHECKED_CAST")
@@ -67,13 +125,12 @@ interface VolumedeckChannel {
             val args = message as List<Any?>
             val autoStartArg = args[0] as Boolean
             val runInBackgroundArg = args[1] as Boolean
-            val showStopButtonInAndroidNotificationArg = args[2] as Boolean
-            val showSpeedAndVolumeChangesInAndroidNotificationArg = args[3] as Boolean
-            val androidActivationKeyArg = args[4] as String?
-            val iOSActivationKeyArg = args[5] as String?
+            val nativeAndroidConfigArg = args[2] as NativeAndroidConfig?
+            val androidActivationKeyArg = args[3] as String?
+            val iOSActivationKeyArg = args[4] as String?
             var wrapped: List<Any?>
             try {
-              api.initialize(autoStartArg, runInBackgroundArg, showStopButtonInAndroidNotificationArg, showSpeedAndVolumeChangesInAndroidNotificationArg, androidActivationKeyArg, iOSActivationKeyArg)
+              api.initialize(autoStartArg, runInBackgroundArg, nativeAndroidConfigArg, androidActivationKeyArg, iOSActivationKeyArg)
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)
@@ -108,6 +165,25 @@ interface VolumedeckChannel {
             var wrapped: List<Any?>
             try {
               api.stop()
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.volumedeck_flutter.VolumedeckChannel.setMockSpeed", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val speedArg = args[0].let { if (it is Int) it.toLong() else it as Long }
+            var wrapped: List<Any?>
+            try {
+              api.setMockSpeed(speedArg)
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)
