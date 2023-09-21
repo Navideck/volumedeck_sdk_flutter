@@ -1,3 +1,7 @@
+## 1.1.5
+* Add new parameter `androidConfig`  
+* Add `setMockSpeed` method for testing speed and volume changes
+
 ## 1.1.4
 * Bump android native libraries to 1.4.0
 
