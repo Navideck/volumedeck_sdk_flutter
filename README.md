@@ -1,8 +1,9 @@
-# Volumedeck Flutter
-
 <p align="center">
   <img src="https://navideck.com/sites/navideck.com/files/2023-10/Volumedeck%20SDK%20icon.png" height=150 />
 </p>
+
+# Volumedeck Flutter
+[![volumedeck_flutter version](https://img.shields.io/pub/v/volumedeck_flutter?label=volumedeck_flutter)](https://pub.dev/packages/volumedeck_flutter)
 
 ## Overview
 

@@ -1,3 +1,6 @@
+## 1.1.6
+* Improve readme
+
 ## 1.1.5
 * Add new parameter `androidConfig`  
 * Add `setMockSpeed` method for testing speed and volume changes
