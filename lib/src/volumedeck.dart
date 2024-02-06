@@ -48,10 +48,8 @@ class Volumedeck {
       NativeAndroidConfig(
         showStopButtonInNotification:
             androidConfig?.showStopButtonInNotification,
-        showSpeedAndVolumeChangesInNotification:
-            androidConfig?.showSpeedAndVolumeChangesInNotification,
         notificationTitle: androidConfig?.notificationTitle,
-        notificationSubtitleFormat: androidConfig?.notificationSubtitleFormat,
+        notificationSubtitle: androidConfig?.notificationSubtitle,
         notificationStopButtonText: androidConfig?.notificationStopButtonText,
         notificationIconDrawable: androidConfig?.notificationIconDrawable,
       ),

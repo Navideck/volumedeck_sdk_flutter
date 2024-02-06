@@ -46,9 +46,8 @@ class FlutterError (
 /** Generated class from Pigeon that represents data sent in messages. */
 data class NativeAndroidConfig (
   val showStopButtonInNotification: Boolean? = null,
-  val showSpeedAndVolumeChangesInNotification: Boolean? = null,
   val notificationTitle: String? = null,
-  val notificationSubtitleFormat: String? = null,
+  val notificationSubtitle: String? = null,
   val notificationStopButtonText: String? = null,
   val notificationIconDrawable: String? = null
 
@@ -57,20 +56,18 @@ data class NativeAndroidConfig (
     @Suppress("UNCHECKED_CAST")
     fun fromList(list: List<Any?>): NativeAndroidConfig {
       val showStopButtonInNotification = list[0] as Boolean?
-      val showSpeedAndVolumeChangesInNotification = list[1] as Boolean?
-      val notificationTitle = list[2] as String?
-      val notificationSubtitleFormat = list[3] as String?
-      val notificationStopButtonText = list[4] as String?
-      val notificationIconDrawable = list[5] as String?
-      return NativeAndroidConfig(showStopButtonInNotification, showSpeedAndVolumeChangesInNotification, notificationTitle, notificationSubtitleFormat, notificationStopButtonText, notificationIconDrawable)
+      val notificationTitle = list[1] as String?
+      val notificationSubtitle = list[2] as String?
+      val notificationStopButtonText = list[3] as String?
+      val notificationIconDrawable = list[4] as String?
+      return NativeAndroidConfig(showStopButtonInNotification, notificationTitle, notificationSubtitle, notificationStopButtonText, notificationIconDrawable)
     }
   }
   fun toList(): List<Any?> {
     return listOf<Any?>(
       showStopButtonInNotification,
-      showSpeedAndVolumeChangesInNotification,
       notificationTitle,
-      notificationSubtitleFormat,
+      notificationSubtitle,
       notificationStopButtonText,
       notificationIconDrawable,
     )

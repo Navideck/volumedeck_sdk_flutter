@@ -38,15 +38,11 @@ class VolumedeckFlutterPlugin : FlutterPlugin, VolumedeckChannel, ActivityAware 
             runInBackground = runInBackground,
             showStopButtonInNotification = nativeAndroidConfig?.showStopButtonInNotification
                 ?: false,
-            showSpeedAndVolumeChangesInNotification = nativeAndroidConfig?.showSpeedAndVolumeChangesInNotification
-                ?: false,
             notificationTitle = nativeAndroidConfig?.notificationTitle,
-            notificationSubtitleFormat = nativeAndroidConfig?.notificationSubtitleFormat,
+            notificationSubtitle = nativeAndroidConfig?.notificationSubtitle,
             notificationStopButtonText = nativeAndroidConfig?.notificationStopButtonText,
             notificationIcon = nativeAndroidConfig?.notificationIconDrawable?.let {
-                activity.getDrawable(
-                    it
-                )
+                activity.getDrawable(it)
             },
             activationKey = androidActivationKey,
             locationServicesStatusChange = { isOn: Boolean ->

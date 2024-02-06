@@ -37,25 +37,22 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 /// Generated class from Pigeon that represents data sent in messages.
 struct NativeAndroidConfig {
   var showStopButtonInNotification: Bool? = nil
-  var showSpeedAndVolumeChangesInNotification: Bool? = nil
   var notificationTitle: String? = nil
-  var notificationSubtitleFormat: String? = nil
+  var notificationSubtitle: String? = nil
   var notificationStopButtonText: String? = nil
   var notificationIconDrawable: String? = nil
 
   static func fromList(_ list: [Any?]) -> NativeAndroidConfig? {
     let showStopButtonInNotification: Bool? = nilOrValue(list[0])
-    let showSpeedAndVolumeChangesInNotification: Bool? = nilOrValue(list[1])
-    let notificationTitle: String? = nilOrValue(list[2])
-    let notificationSubtitleFormat: String? = nilOrValue(list[3])
-    let notificationStopButtonText: String? = nilOrValue(list[4])
-    let notificationIconDrawable: String? = nilOrValue(list[5])
+    let notificationTitle: String? = nilOrValue(list[1])
+    let notificationSubtitle: String? = nilOrValue(list[2])
+    let notificationStopButtonText: String? = nilOrValue(list[3])
+    let notificationIconDrawable: String? = nilOrValue(list[4])
 
     return NativeAndroidConfig(
       showStopButtonInNotification: showStopButtonInNotification,
-      showSpeedAndVolumeChangesInNotification: showSpeedAndVolumeChangesInNotification,
       notificationTitle: notificationTitle,
-      notificationSubtitleFormat: notificationSubtitleFormat,
+      notificationSubtitle: notificationSubtitle,
       notificationStopButtonText: notificationStopButtonText,
       notificationIconDrawable: notificationIconDrawable
     )
@@ -63,9 +60,8 @@ struct NativeAndroidConfig {
   func toList() -> [Any?] {
     return [
       showStopButtonInNotification,
-      showSpeedAndVolumeChangesInNotification,
       notificationTitle,
-      notificationSubtitleFormat,
+      notificationSubtitle,
       notificationStopButtonText,
       notificationIconDrawable,
     ]
