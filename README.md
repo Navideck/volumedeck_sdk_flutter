@@ -49,6 +49,11 @@ Volumedeck.initialize(
 );
 ```
 
+### Start volumedeck
+```dart
+await Volumedeck.start();
+```
+
 ### Stop volumedeck
 
 ```dart
