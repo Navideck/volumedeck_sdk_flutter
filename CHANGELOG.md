@@ -1,3 +1,7 @@
+## 1.2.0
+* Bump android native libraries to 1.6.0 
+* Fix volumedeck background service for Android 14+
+
 ## 1.1.6
 * Improve readme
 
