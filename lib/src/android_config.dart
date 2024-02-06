@@ -2,11 +2,9 @@
 ///
 /// [notificationTitle] - The title of the notification. The default value is null.
 ///
-/// [notificationSubtitleFormat] - The subtitle format of the notification. The default value is null.
-/// Subtitle format must contain two placeholders `%s`, For example: `Speed: %s, Volume: %s`
-/// First placeholder will be replaced with speed and second placeholder will be replaced with volume.
-///
-/// [showSpeedAndVolumeChangesInNotification] - Whether to show speed and volume changes in notification subtitle or not. The default value is `false`.
+/// [notificationSubtitle] - notificationSubtitle The subtitle of the notification.
+/// You can display the speed and volume by including the placeholders %s for speed and %v for volume, 
+/// example: "Speed: %s m/s | Volume: %v". If null then no subtitle is displayed
 ///
 /// [notificationStopButtonText] - The stop button text of the notification. The default value is null.
 ///
@@ -18,16 +16,14 @@
 ///
 class AndroidConfig {
   String? notificationTitle;
-  String? notificationSubtitleFormat;
-  bool? showSpeedAndVolumeChangesInNotification;
+  String? notificationSubtitle;
   String? notificationStopButtonText;
   bool? showStopButtonInNotification;
   String? notificationIconDrawable;
 
   AndroidConfig({
     this.notificationTitle,
-    this.notificationSubtitleFormat,
-    this.showSpeedAndVolumeChangesInNotification,
+    this.notificationSubtitle,
     this.notificationStopButtonText,
     this.showStopButtonInNotification,
     this.notificationIconDrawable,

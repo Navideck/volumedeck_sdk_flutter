@@ -55,8 +55,7 @@ class _MyAppState extends State<MyApp> {
         notificationTitle: "Volumedeck is running in background",
         notificationStopButtonText: "Stop Volumedeck",
         showStopButtonInNotification: true,
-        notificationSubtitleFormat: "Speed -> %s m/s | Volume -> %s ",
-        showSpeedAndVolumeChangesInNotification: true,
+        notificationSubtitle: "Speed -> %s m/s | Volume -> %s ",
         notificationIconDrawable: "notification_icon",
       ),
       locationServicesStatusChange: (bool status) {

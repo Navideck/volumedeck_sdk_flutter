@@ -43,9 +43,8 @@ abstract class VolumedeckCallback {
 
 class NativeAndroidConfig {
   bool? showStopButtonInNotification;
-  bool? showSpeedAndVolumeChangesInNotification;
   String? notificationTitle;
-  String? notificationSubtitleFormat;
+  String? notificationSubtitle;
   String? notificationStopButtonText;
   String? notificationIconDrawable;
 }

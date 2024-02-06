@@ -11,20 +11,17 @@ import 'package:flutter/services.dart';
 class NativeAndroidConfig {
   NativeAndroidConfig({
     this.showStopButtonInNotification,
-    this.showSpeedAndVolumeChangesInNotification,
     this.notificationTitle,
-    this.notificationSubtitleFormat,
+    this.notificationSubtitle,
     this.notificationStopButtonText,
     this.notificationIconDrawable,
   });
 
   bool? showStopButtonInNotification;
 
-  bool? showSpeedAndVolumeChangesInNotification;
-
   String? notificationTitle;
 
-  String? notificationSubtitleFormat;
+  String? notificationSubtitle;
 
   String? notificationStopButtonText;
 
@@ -33,9 +30,8 @@ class NativeAndroidConfig {
   Object encode() {
     return <Object?>[
       showStopButtonInNotification,
-      showSpeedAndVolumeChangesInNotification,
       notificationTitle,
-      notificationSubtitleFormat,
+      notificationSubtitle,
       notificationStopButtonText,
       notificationIconDrawable,
     ];
@@ -45,11 +41,10 @@ class NativeAndroidConfig {
     result as List<Object?>;
     return NativeAndroidConfig(
       showStopButtonInNotification: result[0] as bool?,
-      showSpeedAndVolumeChangesInNotification: result[1] as bool?,
-      notificationTitle: result[2] as String?,
-      notificationSubtitleFormat: result[3] as String?,
-      notificationStopButtonText: result[4] as String?,
-      notificationIconDrawable: result[5] as String?,
+      notificationTitle: result[1] as String?,
+      notificationSubtitle: result[2] as String?,
+      notificationStopButtonText: result[3] as String?,
+      notificationIconDrawable: result[4] as String?,
     );
   }
 }
