@@ -2,9 +2,9 @@
 ///
 /// [notificationTitle] - The title of the notification. The default value is null.
 ///
-/// [notificationSubtitle] - notificationSubtitle The subtitle of the notification.
-/// You can display the speed and volume by including the placeholders %s for speed and %v for volume, 
-/// example: "Speed: %s m/s | Volume: %v". If null then no subtitle is displayed
+/// [notificationSubtitle] - The subtitle of the notification.
+/// You can display the speed and volume by including the placeholders `%s` for speed and `%v` for volume, for example: `Speed: %s m/s | Volume: %v`.
+/// If null then no subtitle is displayed.
 ///
 /// [notificationStopButtonText] - The stop button text of the notification. The default value is null.
 ///
