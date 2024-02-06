@@ -33,7 +33,7 @@ First configure your [Android](https://github.com/Navideck/Volumedeck-Android#ru
 ```dart
 Volumedeck.initialize(
     runInBackground: true, 
-    autoStart: true // Set to false if you don't want to start volumedeck on initialization
+    autoStart: true // Set to false if you don't want to start Volumedeck on initialization
     locationServicesStatusChange: (bool status) {
       // Get location on/off status updates
     },
@@ -49,12 +49,14 @@ Volumedeck.initialize(
 );
 ```
 
-### Start volumedeck
+### Start Volumedeck
+
+You don't need to explicitly call start() since by default Volumedeck will autoStart when initialized.
 ```dart
 await Volumedeck.start();
 ```
 
-### Stop volumedeck
+### Stop Volumedeck
 
 ```dart
 Volumedeck.stop();
