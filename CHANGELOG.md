@@ -1,3 +1,8 @@
+## 1.2.1
+* Bump Android compileSdkVersion to 35
+* Add namespace to fix compilation with latest AGP
+* Fix Android compilation with latest Flutter
+
 ## 1.2.0
 * Bump Android native library to 1.6.0 
 * Fix Volumedeck background service for Android 14+
